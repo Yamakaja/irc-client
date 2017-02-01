@@ -1,10 +1,9 @@
 package me.yamakaja.irc.client;
 
-import com.google.inject.Inject;
+import com.google.inject.Guice;
 import com.google.inject.Injector;
-import com.google.inject.Singleton;
 import me.yamakaja.irc.client.handler.MessageReceiveHandler;
-import me.yamakaja.irc.client.handler.ServerConnectHandler;
+import me.yamakaja.irc.client.handler.ServerConnectionEventHandler;
 import me.yamakaja.irc.client.network.IRCNetworkClient;
 import me.yamakaja.irc.client.network.event.ServerConnectEvent;
 import net.lahwran.fevents.EventHandler;
@@ -16,28 +15,23 @@ import java.util.Scanner;
  */
 public class CommandLineClient {
 
-    @Inject
-    private Injector injector;
+    private Injector injector = Guice.createInjector();
+
+    private String host;
+    private int port;
+
+    public CommandLineClient(String host, int port) {
+        this.host = host;
+        this.port = port;
+    }
 
     public void launch() {
         Scanner scanner = new Scanner(System.in);
 
-        String host;
-        int port;
-
         System.out.println("Welcome to Yamakaja's commandline IRC client!");
-        System.out.print("Host: ");
-        host = scanner.nextLine();
-        while (true) try {
-            System.out.print("Port: ");
-            port = scanner.nextInt();
-            break;
-        } catch (Exception ignored) {
-        }
-
         IRCNetworkClient ircClient = injector.getInstance(IRCNetworkClient.class);
         ircClient.setRemote(host, port);
-        ircClient.getEventBus().registerListener(injector.getInstance(ServerConnectHandler.class));
+        ircClient.getEventBus().registerListener(injector.getInstance(ServerConnectionEventHandler.class));
         ircClient.getEventBus().registerListener(injector.getInstance(MessageReceiveHandler.class));
         if (!ircClient.connect()) {
             System.out.println("An error occurred while trying to connect!");
@@ -51,8 +45,7 @@ public class CommandLineClient {
             ircClient.sendRaw(scanner.nextLine());
         }
 
-        System.out.println("Shutting down!");
-        ircClient.disconnect();
+        ircClient.cleanup();
 
     }
 

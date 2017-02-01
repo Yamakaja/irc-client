@@ -22,6 +22,7 @@ public class IRCClientChannelInitializer extends ChannelInitializer<SocketChanne
                 .addAfter("frameDecoder", "packetDecoder", injector.getInstance(PacketDecoder.class))
                 .addAfter("packetDecoder", "pingResponder", injector.getInstance(PingPacketHandler.class))
                 .addAfter("pingResponder", "packetHandler", injector.getInstance(InboundPacketHandler.class))
+                .addLast(injector.getInstance(ChannelCloseHandler.class))
                 .addLast(injector.getInstance(PacketEncoder.class));
     }
 

@@ -73,7 +73,7 @@ public class IRCNetworkClient {
         return false;
     }
 
-    public void disconnect() {
+    public void cleanup() {
         try {
             channel.disconnect();
             channel.eventLoop().parent().shutdownGracefully().syncUninterruptibly();
