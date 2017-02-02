@@ -39,7 +39,7 @@ public class CommandLineClient {
         }
 
         ircClient.setNick("Yamakaja_");
-        ircClient.setUser("Yamakaja_", (byte)0, "*", "It's da fake Yamakaja!");
+        ircClient.setUser("Yamakaja__", (byte)0, "*", "It's da fake Yamakaja!");
 
         while(ircClient.isConnected()) {
             ircClient.sendRaw(scanner.nextLine());

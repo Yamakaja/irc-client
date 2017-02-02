@@ -5,8 +5,8 @@ import com.google.inject.Injector;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.handler.codec.LineBasedFrameDecoder;
-import me.yamakaja.irc.client.network.codec.PacketDecoder;
-import me.yamakaja.irc.client.network.codec.PacketEncoder;
+import me.yamakaja.irc.client.network.packet.codec.PacketDecoder;
+import me.yamakaja.irc.client.network.packet.codec.PacketEncoder;
 
 /**
  * Created by Yamakaja on 01.02.17.

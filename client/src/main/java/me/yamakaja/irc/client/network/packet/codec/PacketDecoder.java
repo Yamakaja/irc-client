@@ -1,5 +1,6 @@
-package me.yamakaja.irc.client.network.codec;
+package me.yamakaja.irc.client.network.packet.codec;
 
+import com.sun.javaws.exceptions.InvalidArgumentException;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
@@ -16,13 +17,26 @@ public class PacketDecoder extends ByteToMessageDecoder {
 
     private static final Charset UTF_8 = Charset.forName("UTF-8");
 
+    private static ClientboundPacketType parseMessagePacket(String[] message) {
+        try {
+            return ClientboundPacketType.getForId(Integer.parseInt(message[1]));
+        } catch (IllegalArgumentException ignore) {
+            try {
+                return ClientboundPacketType.valueOf(message[1]);
+            } catch(IllegalArgumentException e) {
+                return ClientboundPacketType.MESSAGE;
+            }
+        }
+    }
+
     @Override
     protected void decode(ChannelHandlerContext channelHandlerContext, ByteBuf byteBuf, List<Object> list) throws Exception {
         String message = byteBuf.readBytes(byteBuf.readableBytes()).toString(UTF_8);
+        String[] splitMessage = message.split(" ");
 
         System.out.println(" <-- " + message);
 
-        ClientboundPacketType type = message.startsWith(":") ? ClientboundPacketType.MESSAGE : ClientboundPacketType.valueOf(message.split(" ")[0]);
+        ClientboundPacketType type = message.startsWith(":") ? parseMessagePacket(splitMessage) : ClientboundPacketType.valueOf(splitMessage[0]);
         ClientboundPacket packet = type.getPacketClass().newInstance();
         packet.read(message);
         list.add(packet);

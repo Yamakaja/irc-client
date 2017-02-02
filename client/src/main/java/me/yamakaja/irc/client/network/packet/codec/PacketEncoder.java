@@ -1,4 +1,4 @@
-package me.yamakaja.irc.client.network.codec;
+package me.yamakaja.irc.client.network.packet.codec;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;

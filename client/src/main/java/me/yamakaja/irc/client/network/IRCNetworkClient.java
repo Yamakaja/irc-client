@@ -6,26 +6,23 @@ import com.google.inject.Singleton;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelInitializer;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.epoll.Epoll;
 import io.netty.channel.epoll.EpollEventLoopGroup;
 import io.netty.channel.epoll.EpollSocketChannel;
 import io.netty.channel.nio.NioEventLoopGroup;
-import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
-import io.netty.handler.codec.LineBasedFrameDecoder;
 import me.yamakaja.irc.client.network.event.ServerConnectEvent;
 import me.yamakaja.irc.client.network.event.ServerDisconnectEvent;
-import me.yamakaja.irc.client.network.codec.PacketDecoder;
-import me.yamakaja.irc.client.network.codec.PacketEncoder;
 import me.yamakaja.irc.client.network.handler.IRCClientChannelInitializer;
-import me.yamakaja.irc.client.network.handler.InboundPacketHandler;
-import me.yamakaja.irc.client.network.handler.PingPacketHandler;
+import me.yamakaja.irc.client.network.handler.command.NamReplyHandler;
 import me.yamakaja.irc.client.network.packet.server.PacketServerNick;
 import me.yamakaja.irc.client.network.packet.server.PacketServerRaw;
 import me.yamakaja.irc.client.network.packet.server.PacketServerUser;
 import net.lahwran.fevents.ThreadedEventBus;
+
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Created by Yamakaja on 01.02.17.
@@ -40,6 +37,8 @@ public class IRCNetworkClient {
 
     private ThreadedEventBus eventBus;
 
+    private List<Channel> channels = new LinkedList<>();
+
     @Inject
     private Injector injector;
 
@@ -53,6 +52,8 @@ public class IRCNetworkClient {
     }
 
     public boolean connect() {
+        registerListeners();
+
         EventLoopGroup eventLoopGroup = Epoll.isAvailable() ? new EpollEventLoopGroup() : new NioEventLoopGroup();
         try {
             Bootstrap bootstrap = new Bootstrap();
@@ -64,13 +65,17 @@ public class IRCNetworkClient {
             this.channel = future.channel();
             boolean success = future.sync().isSuccess();
             if (success)
-                eventBus.callEvent(new ServerConnectEvent());
+                this.eventBus.callEvent(new ServerConnectEvent());
             return success;
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
 
         return false;
+    }
+
+    private void registerListeners() {
+        eventBus.registerListener(injector.getInstance(NamReplyHandler.class));
     }
 
     public void cleanup() {
@@ -112,4 +117,5 @@ public class IRCNetworkClient {
     public boolean isConnected() {
         return channel.isOpen();
     }
+
 }
