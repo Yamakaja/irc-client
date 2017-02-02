@@ -5,7 +5,7 @@ import me.yamakaja.irc.client.network.packet.client.PacketClientMessage;
 /**
  * Created by Yamakaja on 01.02.17.
  */
-public class MessageReceiveEvent extends PacketEvent<PacketClientMessage> {
+public class ServerMessageReceiveEvent extends PacketEvent<PacketClientMessage> {
 
     private PacketClientMessage message;
 

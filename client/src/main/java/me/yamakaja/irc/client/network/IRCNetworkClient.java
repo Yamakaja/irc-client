@@ -75,6 +75,8 @@ public class IRCNetworkClient {
 
     public void cleanup() {
         try {
+            if(channel.isOpen())
+                channel.writeAndFlush(new PacketServerRaw("QUIT"));
             channel.disconnect();
             channel.eventLoop().parent().shutdownGracefully().syncUninterruptibly();
             eventBus.callEvent(new ServerDisconnectEvent());

@@ -1,6 +1,6 @@
 package me.yamakaja.irc.client.handler;
 
-import me.yamakaja.irc.client.network.event.packet.MessageReceiveEvent;
+import me.yamakaja.irc.client.network.event.packet.ServerMessageReceiveEvent;
 import net.lahwran.fevents.EventHandler;
 import net.lahwran.fevents.Listener;
 
@@ -10,8 +10,8 @@ import net.lahwran.fevents.Listener;
 public class MessageReceiveHandler implements Listener {
 
     @EventHandler
-    public void onMessageReceive(MessageReceiveEvent e) {
-        //System.out.println(e.getMessage());
+    public void onMessageReceive(ServerMessageReceiveEvent e) {
+
     }
 
 }

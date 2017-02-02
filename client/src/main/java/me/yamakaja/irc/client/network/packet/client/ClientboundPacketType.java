@@ -1,7 +1,7 @@
 package me.yamakaja.irc.client.network.packet.client;
 
 import me.yamakaja.irc.client.network.event.packet.ErrorReceiveEvent;
-import me.yamakaja.irc.client.network.event.packet.MessageReceiveEvent;
+import me.yamakaja.irc.client.network.event.packet.ServerMessageReceiveEvent;
 import me.yamakaja.irc.client.network.event.packet.PacketEvent;
 import me.yamakaja.irc.client.network.event.packet.PingReceiveEvent;
 import org.jetbrains.annotations.Nullable;
@@ -12,7 +12,7 @@ import org.jetbrains.annotations.Nullable;
 public enum ClientboundPacketType {
 
     PING(PacketClientPing.class, PingReceiveEvent.class),
-    MESSAGE(PacketClientMessage.class, MessageReceiveEvent.class),
+    MESSAGE(PacketClientMessage.class, ServerMessageReceiveEvent.class),
     ERROR(PacketClientError.class, ErrorReceiveEvent.class);
 
     private Class<? extends ClientboundPacket> packetClass;
