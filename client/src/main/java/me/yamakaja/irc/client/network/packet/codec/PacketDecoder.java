@@ -1,6 +1,5 @@
 package me.yamakaja.irc.client.network.packet.codec;
 
-import com.sun.javaws.exceptions.InvalidArgumentException;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
@@ -23,7 +22,7 @@ public class PacketDecoder extends ByteToMessageDecoder {
         } catch (IllegalArgumentException ignore) {
             try {
                 return ClientboundPacketType.valueOf(message[1]);
-            } catch(IllegalArgumentException e) {
+            } catch (IllegalArgumentException e) {
                 return ClientboundPacketType.MESSAGE;
             }
         }

@@ -12,17 +12,19 @@ import io.netty.channel.epoll.EpollEventLoopGroup;
 import io.netty.channel.epoll.EpollSocketChannel;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import me.yamakaja.irc.client.chat.ChatChannel;
+import me.yamakaja.irc.client.chat.ChatUser;
 import me.yamakaja.irc.client.network.event.ServerConnectEvent;
 import me.yamakaja.irc.client.network.event.ServerDisconnectEvent;
 import me.yamakaja.irc.client.network.handler.IRCClientChannelInitializer;
-import me.yamakaja.irc.client.network.handler.command.NamReplyHandler;
 import me.yamakaja.irc.client.network.packet.server.PacketServerNick;
 import me.yamakaja.irc.client.network.packet.server.PacketServerRaw;
 import me.yamakaja.irc.client.network.packet.server.PacketServerUser;
+import me.yamakaja.irc.client.network.packet.server.PacketServerWhois;
 import net.lahwran.fevents.ThreadedEventBus;
 
-import java.util.LinkedList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by Yamakaja on 01.02.17.
@@ -33,11 +35,12 @@ public class IRCNetworkClient {
     private String host;
     private int port;
 
-    private Channel channel;
+    private Channel networkChannel;
 
     private ThreadedEventBus eventBus;
 
-    private List<Channel> channels = new LinkedList<>();
+    private Map<String, ChatChannel> channels = new HashMap<>();
+    private Map<String, ChatUser> users = new HashMap<>();
 
     @Inject
     private Injector injector;
@@ -52,7 +55,6 @@ public class IRCNetworkClient {
     }
 
     public boolean connect() {
-        registerListeners();
 
         EventLoopGroup eventLoopGroup = Epoll.isAvailable() ? new EpollEventLoopGroup() : new NioEventLoopGroup();
         try {
@@ -62,7 +64,7 @@ public class IRCNetworkClient {
                     .handler(injector.getInstance(IRCClientChannelInitializer.class))
                     .remoteAddress(host, port);
             ChannelFuture future = bootstrap.connect();
-            this.channel = future.channel();
+            this.networkChannel = future.channel();
             boolean success = future.sync().isSuccess();
             if (success)
                 this.eventBus.callEvent(new ServerConnectEvent());
@@ -74,17 +76,12 @@ public class IRCNetworkClient {
         return false;
     }
 
-    private void registerListeners() {
-        eventBus.registerListener(injector.getInstance(NamReplyHandler.class));
-    }
-
     public void cleanup() {
         try {
-            if(channel.isOpen())
-                channel.writeAndFlush(new PacketServerRaw("QUIT"));
-            channel.disconnect();
-            channel.eventLoop().parent().shutdownGracefully().syncUninterruptibly();
-            eventBus.callEvent(new ServerDisconnectEvent());
+            if (networkChannel.isOpen())
+                networkChannel.writeAndFlush(new PacketServerRaw("QUIT"));
+            networkChannel.disconnect();
+            networkChannel.eventLoop().parent().shutdownGracefully().syncUninterruptibly();
         } catch (Exception e) {
             System.err.println(e.getLocalizedMessage());
         }
@@ -103,19 +100,43 @@ public class IRCNetworkClient {
     }
 
     public void setNick(String name) {
-        channel.writeAndFlush(new PacketServerNick(name));
+        networkChannel.writeAndFlush(new PacketServerNick(name));
     }
 
     public void setUser(String name, byte mode, String host, String realname) {
-        channel.writeAndFlush(new PacketServerUser(name, mode, host, realname));
+        networkChannel.writeAndFlush(new PacketServerUser(name, mode, host, realname));
     }
 
     public void sendRaw(String command) {
-        channel.writeAndFlush(new PacketServerRaw(command));
+        networkChannel.writeAndFlush(new PacketServerRaw(command));
     }
 
     public boolean isConnected() {
-        return channel.isOpen();
+        return networkChannel.isOpen();
+    }
+
+    public Map<String, ChatChannel> getChannels() {
+        return channels;
+    }
+
+    public ChatChannel getChannel(String name) {
+        if (channels.containsKey(name))
+            return channels.get(name);
+        ChatChannel channel = injector.getInstance(ChatChannel.class);
+        channels.put(name, channel);
+        return channel;
+    }
+
+    public ChatUser getUser(String nick) {
+        if (users.containsKey(nick))
+            return users.get(nick);
+        ChatUser user = injector.getInstance(ChatUser.class);
+        users.put(nick, user);
+        return user;
+    }
+
+    public void sendWhois(String nick) {
+        networkChannel.writeAndFlush(new PacketServerWhois(nick));
     }
 
 }

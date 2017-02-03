@@ -3,6 +3,7 @@ package me.yamakaja.irc.client.network.packet.client;
 import me.yamakaja.irc.client.network.event.packet.*;
 import me.yamakaja.irc.client.network.packet.client.command.CommandResponse;
 import me.yamakaja.irc.client.network.packet.client.command.PacketClientNames;
+import me.yamakaja.irc.client.network.packet.client.command.whois.*;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
@@ -47,19 +48,19 @@ public enum ClientboundPacketType {
     RPL_TRACELOG(261),
     RPL_TRACEEND(262),
     RPL_TRYAGAIN(263),
-    RPL_AWAY(301),
+    RPL_AWAY(301, PacketClientWhoisAway.class),
     RPL_USERHOST(302),
     RPL_ISON(303),
     RPL_UNAWAY(305),
     RPL_NOWAWAY(306),
-    RPL_WHOISUSER(311),
-    RPL_WHOISSERVER(312),
-    RPL_WHOISOPERATOR(313),
+    RPL_WHOISUSER(311, PacketClientWhoisUser.class),
+    RPL_WHOISSERVER(312, PacketClientWhoisServer.class),
+    RPL_WHOISOPERATOR(313, PacketClientWhoisOperator.class),
     RPL_WHOWASUSER(314),
     RPL_ENDOFWHO(315),
-    RPL_WHOISIDLE(317),
-    RPL_ENDOFWHOIS(318),
-    RPL_WHOISCHANNELS(319),
+    RPL_WHOISIDLE(317, PacketClientWhoisIdle.class),
+    RPL_ENDOFWHOIS(318, PacketClientWhoisEnd.class, EndOfWhoisEvent.class),
+    RPL_WHOISCHANNELS(319, PacketClientWhoisChannels.class),
     RPL_LISTSTART(321),
     RPL_LIST(322),
     RPL_LISTEND(323),
@@ -171,6 +172,10 @@ public enum ClientboundPacketType {
         this.isCommandResponse = true;
     }
 
+    ClientboundPacketType(int id, Class<? extends CommandResponse> packetClass) {
+        this(id, packetClass, null);
+    }
+
     ClientboundPacketType(int id) {
         this.id = id;
     }
@@ -201,6 +206,8 @@ public enum ClientboundPacketType {
 
     @Nullable
     public PacketEvent getEvent(ClientboundPacket packet) {
+        if(eventClass == null)
+            return null;
         try {
             PacketEvent event = eventClass.newInstance();
             event.read(packet);

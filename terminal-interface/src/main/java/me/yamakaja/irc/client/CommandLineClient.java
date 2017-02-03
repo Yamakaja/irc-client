@@ -4,6 +4,7 @@ import com.google.inject.Guice;
 import com.google.inject.Injector;
 import me.yamakaja.irc.client.handler.MessageReceiveHandler;
 import me.yamakaja.irc.client.handler.ServerConnectionEventHandler;
+import me.yamakaja.irc.client.handler.WhoisListener;
 import me.yamakaja.irc.client.network.IRCNetworkClient;
 import me.yamakaja.irc.client.network.event.ServerConnectEvent;
 import net.lahwran.fevents.EventHandler;
@@ -31,8 +32,11 @@ public class CommandLineClient {
         System.out.println("Welcome to Yamakaja's commandline IRC client!");
         IRCNetworkClient ircClient = injector.getInstance(IRCNetworkClient.class);
         ircClient.setRemote(host, port);
+
         ircClient.getEventBus().registerListener(injector.getInstance(ServerConnectionEventHandler.class));
         ircClient.getEventBus().registerListener(injector.getInstance(MessageReceiveHandler.class));
+        ircClient.getEventBus().registerListener(injector.getInstance(WhoisListener.class));
+
         if (!ircClient.connect()) {
             System.out.println("An error occurred while trying to connect!");
             return;

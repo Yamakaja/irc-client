@@ -4,12 +4,13 @@ import com.google.inject.Inject;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import me.yamakaja.irc.client.network.IRCNetworkClient;
+import me.yamakaja.irc.client.network.event.packet.PacketEvent;
 import me.yamakaja.irc.client.network.packet.client.ClientboundPacket;
 
 /**
  * Created by Yamakaja on 01.02.17.
  */
-public class InboundPacketHandler extends ChannelInboundHandlerAdapter {
+public class PacketEventHandler extends ChannelInboundHandlerAdapter {
 
     @Inject
     private IRCNetworkClient ircClient;
@@ -17,7 +18,9 @@ public class InboundPacketHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         ClientboundPacket packet = (ClientboundPacket) msg;
-        ircClient.getEventBus().callEventAsync(packet.getPacketType().getEvent(packet));
+        PacketEvent event = packet.getPacketType().getEvent(packet);
+        if (event != null)
+            ircClient.getEventBus().callEventAsync(event);
     }
 
     @Override
