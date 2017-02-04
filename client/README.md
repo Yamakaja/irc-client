@@ -119,7 +119,7 @@ How does that look in practice?
 Now that we know what we're dealing with we can start to plan:
 Since the server only has one MOTD we should be safe to store it in our `IRCNetworkClient` class:
 
-```
+```java
 private List<String> motd = new LinkedList<>();
 
 public List<String> getMotd() {
