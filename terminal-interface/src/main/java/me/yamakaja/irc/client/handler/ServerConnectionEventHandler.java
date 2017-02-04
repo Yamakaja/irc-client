@@ -1,9 +1,9 @@
 package me.yamakaja.irc.client.handler;
 
 import com.google.inject.Inject;
-import me.yamakaja.irc.client.network.IRCNetworkClient;
-import me.yamakaja.irc.client.network.event.ServerConnectEvent;
-import me.yamakaja.irc.client.network.event.ServerDisconnectEvent;
+import me.yamakaja.irc.client.IRCClient;
+import me.yamakaja.irc.client.network.event.server.ServerConnectEvent;
+import me.yamakaja.irc.client.network.event.server.ServerDisconnectEvent;
 import net.lahwran.fevents.EventHandler;
 import net.lahwran.fevents.Listener;
 
@@ -13,7 +13,7 @@ import net.lahwran.fevents.Listener;
 public class ServerConnectionEventHandler implements Listener {
 
     @Inject
-    private IRCNetworkClient client;
+    private IRCClient client;
 
     @EventHandler
     public void onServerConnect(ServerConnectEvent e) {

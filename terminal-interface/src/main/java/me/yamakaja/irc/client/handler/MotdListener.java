@@ -1,6 +1,6 @@
 package me.yamakaja.irc.client.handler;
 
-import me.yamakaja.irc.client.network.event.packet.EndOfMotdEvent;
+import me.yamakaja.irc.client.network.event.server.MotdEvent;
 import net.lahwran.fevents.EventHandler;
 import net.lahwran.fevents.Listener;
 
@@ -10,7 +10,7 @@ import net.lahwran.fevents.Listener;
 public class MotdListener implements Listener {
 
     @EventHandler
-    public void onMotdFinish(EndOfMotdEvent e) {
+    public void onMotdFinish(MotdEvent e) {
         e.getMotd().forEach(System.out::println);
     }
 

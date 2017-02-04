@@ -1,8 +1,11 @@
 package me.yamakaja.irc.client.chat;
 
 import com.google.inject.Inject;
-import me.yamakaja.irc.client.network.IRCNetworkClient;
+import me.yamakaja.irc.client.IRCClient;
 
+import java.util.Collection;
+import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -13,10 +16,14 @@ public class ChatChannel {
     private String name;
     private String topic;
 
-    private List<ChatUser> users;
+    private List<String> users = new LinkedList<>();
+    private boolean finishedNames = false;
+
+    private String topicSetter;
+    private Date topicTime;
 
     @Inject
-    private IRCNetworkClient ircClient;
+    private IRCClient ircClient;
 
     public ChatChannel(String name) {
         this.name = name;
@@ -24,10 +31,6 @@ public class ChatChannel {
 
     public String getName() {
         return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public String getTopic() {
@@ -38,12 +41,16 @@ public class ChatChannel {
         this.topic = topic;
     }
 
-    public List<ChatUser> getUsers() {
+    public List<String> getUsers() {
         return users;
     }
 
-    public void setUsers(List<ChatUser> users) {
-        this.users = users;
+    public void setTopicSetter(String topicSetter) {
+        this.topicSetter = topicSetter;
+    }
+
+    public void setTopicTime(Date topicTime) {
+        this.topicTime = topicTime;
     }
 
     @Override
@@ -54,13 +61,52 @@ public class ChatChannel {
         ChatChannel that = (ChatChannel) o;
 
         if (name != null ? !name.equals(that.name) : that.name != null) return false;
-        return topic != null ? topic.equals(that.topic) : that.topic == null;
+        if (topic != null ? !topic.equals(that.topic) : that.topic != null) return false;
+        if (users != null ? !users.equals(that.users) : that.users != null) return false;
+        if (topicSetter != null ? !topicSetter.equals(that.topicSetter) : that.topicSetter != null) return false;
+        return topicTime != null ? topicTime.equals(that.topicTime) : that.topicTime == null;
     }
 
     @Override
     public int hashCode() {
         int result = name != null ? name.hashCode() : 0;
         result = 31 * result + (topic != null ? topic.hashCode() : 0);
+        result = 31 * result + (users != null ? users.hashCode() : 0);
+        result = 31 * result + (topicSetter != null ? topicSetter.hashCode() : 0);
+        result = 31 * result + (topicTime != null ? topicTime.hashCode() : 0);
         return result;
     }
+
+    public String getTopicSetter() {
+        return topicSetter;
+    }
+
+    public Date getTopicTime() {
+        return topicTime;
+    }
+
+    @Override
+    public String toString() {
+        return "ChatChannel{" +
+                "name='" + name + '\'' +
+                ", topic='" + topic + '\'' +
+                ", users=" + users +
+                ", topicSetter='" + topicSetter + '\'' +
+                ", topicTime=" + topicTime +
+                '}';
+    }
+
+    public void finishUsers() {
+        this.finishedNames = true;
+    }
+
+    public void addUsers(Collection<String> usersToAdd) {
+        if(finishedNames) {
+            this.users.clear();
+            finishedNames = false;
+        }
+
+        this.users.addAll(usersToAdd);
+    }
+
 }

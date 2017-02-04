@@ -1,6 +1,7 @@
-package me.yamakaja.irc.client.network.packet.client.command;
+package me.yamakaja.irc.client.network.packet.client.command.names;
 
 import me.yamakaja.irc.client.network.packet.client.ClientboundPacketType;
+import me.yamakaja.irc.client.network.packet.client.command.CommandResponse;
 
 import java.util.ArrayList;
 import java.util.Collection;

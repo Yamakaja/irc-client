@@ -2,12 +2,8 @@ package me.yamakaja.irc.client;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
-import me.yamakaja.irc.client.handler.MessageReceiveHandler;
-import me.yamakaja.irc.client.handler.MotdListener;
-import me.yamakaja.irc.client.handler.ServerConnectionEventHandler;
-import me.yamakaja.irc.client.handler.WhoisListener;
-import me.yamakaja.irc.client.network.IRCNetworkClient;
-import me.yamakaja.irc.client.network.event.ServerConnectEvent;
+import me.yamakaja.irc.client.handler.*;
+import me.yamakaja.irc.client.network.event.server.ServerConnectEvent;
 import net.lahwran.fevents.EventHandler;
 import net.lahwran.fevents.Listener;
 
@@ -33,10 +29,10 @@ public class CommandLineClient {
         Scanner scanner = new Scanner(System.in);
 
         System.out.println("Welcome to Yamakaja's commandline IRC client!");
-        IRCNetworkClient ircClient = injector.getInstance(IRCNetworkClient.class);
+        IRCClient ircClient = injector.getInstance(IRCClient.class);
         ircClient.setRemote(host, port);
 
-        Arrays.stream(new Class[]{ServerConnectionEventHandler.class, MessageReceiveHandler.class, WhoisListener.class, MotdListener.class})
+        Arrays.stream(new Class[]{ServerConnectionEventHandler.class, MessageReceiveHandler.class, WhoisListener.class, MotdListener.class, NamesListener.class})
                 .forEach(listener -> ircClient.getEventBus().registerListener((Listener) injector.getInstance(listener)));
 
         if (!ircClient.connect()) {

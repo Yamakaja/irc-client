@@ -18,13 +18,22 @@ public class IRCClientChannelInitializer extends ChannelInitializer<SocketChanne
 
     @Override
     protected void initChannel(SocketChannel socketChannel) throws Exception {
-        socketChannel.pipeline().addFirst("frameDecoder", new LineBasedFrameDecoder(1000, true, false))
-                .addAfter("frameDecoder", "packetDecoder", injector.getInstance(PacketDecoder.class))
-                .addAfter("packetDecoder", "pingResponder", injector.getInstance(PingPacketHandler.class))
-                .addAfter("pingResponder", "whoisHandler", injector.getInstance(WhoisPacketHandler.class))
-                .addAfter("whoisHandler", "motdHandler", injector.getInstance(MotdPacketHandler.class))
-                .addAfter("motdHandler", "packetEventHandler", injector.getInstance(EventPacketHandler.class))
+        socketChannel.pipeline().addFirst(new LineBasedFrameDecoder(1000, true, false))
+                //Decode incoming traffic
+                .addLast(injector.getInstance(PacketDecoder.class))
+
+                //Application logic
+                .addLast(injector.getInstance(PingPacketHandler.class))
+                .addLast(injector.getInstance(WhoisPacketHandler.class))
+                .addLast(injector.getInstance(MotdPacketHandler.class))
+                .addLast(injector.getInstance(ChannelPacketHandler.class))
+
+                .addLast(injector.getInstance(EventPacketHandler.class))
+
+
                 .addLast(injector.getInstance(ChannelCloseHandler.class))
+
+                //Encode outgoing traffic
                 .addLast(injector.getInstance(PacketEncoder.class));
     }
 

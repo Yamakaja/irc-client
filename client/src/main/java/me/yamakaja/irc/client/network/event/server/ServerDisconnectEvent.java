@@ -1,4 +1,4 @@
-package me.yamakaja.irc.client.network.event;
+package me.yamakaja.irc.client.network.event.server;
 
 import net.lahwran.fevents.Event;
 

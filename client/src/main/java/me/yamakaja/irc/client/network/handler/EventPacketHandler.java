@@ -3,7 +3,7 @@ package me.yamakaja.irc.client.network.handler;
 import com.google.inject.Inject;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
-import me.yamakaja.irc.client.network.IRCNetworkClient;
+import me.yamakaja.irc.client.IRCClient;
 import me.yamakaja.irc.client.network.event.packet.PacketEvent;
 import me.yamakaja.irc.client.network.packet.client.ClientboundPacket;
 
@@ -13,7 +13,7 @@ import me.yamakaja.irc.client.network.packet.client.ClientboundPacket;
 public class EventPacketHandler extends ChannelInboundHandlerAdapter {
 
     @Inject
-    private IRCNetworkClient ircClient;
+    private IRCClient ircClient;
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {

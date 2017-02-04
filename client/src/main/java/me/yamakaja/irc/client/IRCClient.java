@@ -1,4 +1,4 @@
-package me.yamakaja.irc.client.network;
+package me.yamakaja.irc.client;
 
 import com.google.inject.Inject;
 import com.google.inject.Injector;
@@ -14,7 +14,7 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import me.yamakaja.irc.client.chat.ChatChannel;
 import me.yamakaja.irc.client.chat.ChatUser;
-import me.yamakaja.irc.client.network.event.ServerConnectEvent;
+import me.yamakaja.irc.client.network.event.server.ServerConnectEvent;
 import me.yamakaja.irc.client.network.handler.IRCClientChannelInitializer;
 import me.yamakaja.irc.client.network.packet.server.PacketServerNick;
 import me.yamakaja.irc.client.network.packet.server.PacketServerRaw;
@@ -28,7 +28,7 @@ import java.util.*;
  * Created by Yamakaja on 01.02.17.
  */
 @Singleton
-public class IRCNetworkClient {
+public class IRCClient {
 
     private String host;
     private int port;
@@ -38,12 +38,16 @@ public class IRCNetworkClient {
     private ThreadedEventBus eventBus;
 
     private Map<String, ChatChannel> channels = new HashMap<>();
-    private Map<String, ChatUser> users = new HashMap<>();
+
+    private ChatUser connectedUser;
+
+    private String nick;
+    private String user;
 
     @Inject
     private Injector injector;
 
-    public IRCNetworkClient() {
+    public IRCClient() {
         eventBus = new ThreadedEventBus();
     }
 
@@ -53,7 +57,6 @@ public class IRCNetworkClient {
     }
 
     public boolean connect() {
-
         EventLoopGroup eventLoopGroup = Epoll.isAvailable() ? new EpollEventLoopGroup() : new NioEventLoopGroup();
         try {
             Bootstrap bootstrap = new Bootstrap();
@@ -99,6 +102,7 @@ public class IRCNetworkClient {
 
     public void setNick(String name) {
         networkChannel.writeAndFlush(new PacketServerNick(name));
+        this.nick = name;
     }
 
     public void setUser(String name, byte mode, String host, String realname) {
@@ -120,17 +124,9 @@ public class IRCNetworkClient {
     public ChatChannel getChannel(String name) {
         if (channels.containsKey(name))
             return channels.get(name);
-        ChatChannel channel = injector.getInstance(ChatChannel.class);
+        ChatChannel channel = new ChatChannel(name);
         channels.put(name, channel);
         return channel;
-    }
-
-    public ChatUser getUser(String nick) {
-        if (users.containsKey(nick))
-            return users.get(nick);
-        ChatUser user = injector.getInstance(ChatUser.class);
-        users.put(nick, user);
-        return user;
     }
 
     public void sendWhois(String nick) {

@@ -1,8 +1,6 @@
 package me.yamakaja.irc.client.handler;
 
-import com.google.inject.Inject;
-import me.yamakaja.irc.client.network.IRCNetworkClient;
-import me.yamakaja.irc.client.network.event.packet.EndOfWhoisEvent;
+import me.yamakaja.irc.client.network.event.server.WhoisEvent;
 import net.lahwran.fevents.EventHandler;
 import net.lahwran.fevents.Listener;
 
@@ -11,12 +9,9 @@ import net.lahwran.fevents.Listener;
  */
 public class WhoisListener implements Listener {
 
-    @Inject
-    private IRCNetworkClient client;
-
     @EventHandler
-    public void onWhois(EndOfWhoisEvent e) {
-        System.out.println(client.getUser(e.getNick()).toString());
+    public void onWhois(WhoisEvent e) {
+        System.out.println(e.getUser().toString());
     }
 
 }

@@ -33,7 +33,7 @@ public class WhoisListener implements Listener {
     private IRCNetworkClient client;
 
     @EventHandler
-    public void onWhois(EndOfWhoisEvent e) {
+    public void onWhois(WhoisEvent e) {
         System.out.println(client.getUser(e.getNick()).toString());
     }
 
@@ -193,9 +193,9 @@ public class PacketClientMotdEnd extends CommandResponse {
 Now we need to define an event to notify users that the MOTD has arrived, but we only want that to be called when the MOTD ends so the user can directly access the MOTD:
 The event itself doesn't need to contain much information aswell, but because it's triggered as a packet event we need to define it accordingly:
 
-`me.yamakaja.irc.client.network.event.packet.EndOfMotdEvent.java`
+`me.yamakaja.irc.client.network.event.server.MotdEvent.java`
 ```java
-public class EndOfMotdEvent extends PacketEvent<PacketClientMotdEnd> {
+public class MotdEvent extends PacketEvent<PacketClientMotdEnd> {
 
     private List<String> motd;
 

@@ -2,10 +2,13 @@ package me.yamakaja.irc.client.network.packet.client;
 
 import me.yamakaja.irc.client.network.event.packet.*;
 import me.yamakaja.irc.client.network.packet.client.command.CommandResponse;
-import me.yamakaja.irc.client.network.packet.client.command.PacketClientNames;
+import me.yamakaja.irc.client.network.packet.client.command.names.PacketClientNames;
 import me.yamakaja.irc.client.network.packet.client.command.motd.PacketClientMotdEnd;
 import me.yamakaja.irc.client.network.packet.client.command.motd.PacketClientMotdLine;
 import me.yamakaja.irc.client.network.packet.client.command.motd.PacketClientMotdStart;
+import me.yamakaja.irc.client.network.packet.client.command.names.PacketClientNamesEnd;
+import me.yamakaja.irc.client.network.packet.client.command.topic.PacketClientTopic;
+import me.yamakaja.irc.client.network.packet.client.command.topic.PacketClientTopicSetInformation;
 import me.yamakaja.irc.client.network.packet.client.command.whois.*;
 import org.jetbrains.annotations.Nullable;
 
@@ -62,7 +65,7 @@ public enum ClientboundPacketType {
     RPL_WHOWASUSER(314),
     RPL_ENDOFWHO(315),
     RPL_WHOISIDLE(317, PacketClientWhoisIdle.class),
-    RPL_ENDOFWHOIS(318, PacketClientWhoisEnd.class, EndOfWhoisEvent.class),
+    RPL_ENDOFWHOIS(318, PacketClientWhoisEnd.class),
     RPL_WHOISCHANNELS(319, PacketClientWhoisChannels.class),
     RPL_LISTSTART(321),
     RPL_LIST(322),
@@ -70,7 +73,8 @@ public enum ClientboundPacketType {
     RPL_CHANNELMODEIS(324),
     RPL_UNIQOPIS(325),
     RPL_NOTOPIC(331),
-    RPL_TOPIC(332),
+    RPL_TOPIC(332, PacketClientTopic.class),
+    RPL_TOPICINFO(333, PacketClientTopicSetInformation.class),  //Sent by at least the inpIRCd, but not in spec (??) Syntax: <channel> <user who set the topic, nick on inspIRCd. Hostname on freenode> <when they set it>
     RPL_INVITING(341),
     RPL_SUMMONING(342),
     RPL_INVITELIST(346),
@@ -79,10 +83,10 @@ public enum ClientboundPacketType {
     RPL_ENDOFEXCEPTLIST(349),
     RPL_VERSION(351),
     RPL_WHOREPLY(352),
-    RPL_NAMREPLY(353, PacketClientNames.class, NamReplyReceiveEvent.class),
+    RPL_NAMREPLY(353, PacketClientNames.class),
     RPL_LINKS(364),
     RPL_ENDOFLINKS(365),
-    RPL_ENDOFNAMES(366),
+    RPL_ENDOFNAMES(366, PacketClientNamesEnd.class),
     RPL_BANLIST(367),
     RPL_ENDOFBANLIST(368),
     RPL_ENDOFWHOWAS(369),

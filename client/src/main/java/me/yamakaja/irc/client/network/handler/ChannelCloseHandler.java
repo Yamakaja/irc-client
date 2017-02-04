@@ -3,8 +3,8 @@ package me.yamakaja.irc.client.network.handler;
 import com.google.inject.Inject;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
-import me.yamakaja.irc.client.network.IRCNetworkClient;
-import me.yamakaja.irc.client.network.event.ServerDisconnectEvent;
+import me.yamakaja.irc.client.IRCClient;
+import me.yamakaja.irc.client.network.event.server.ServerDisconnectEvent;
 
 /**
  * Created by Yamakaja on 01.02.17.
@@ -12,7 +12,7 @@ import me.yamakaja.irc.client.network.event.ServerDisconnectEvent;
 public class ChannelCloseHandler extends ChannelInboundHandlerAdapter {
 
     @Inject
-    IRCNetworkClient client;
+    IRCClient client;
 
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
