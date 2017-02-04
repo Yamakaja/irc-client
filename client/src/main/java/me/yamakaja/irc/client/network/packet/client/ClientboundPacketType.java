@@ -90,7 +90,7 @@ public enum ClientboundPacketType {
     RPL_MOTD(372, PacketClientMotdLine.class),
     RPL_ENDOFINFO(374),
     RPL_MOTDSTART(375, PacketClientMotdStart.class),
-    RPL_ENDOFMOTD(376, PacketClientMotdEnd.class, EndOfMotdEvent.class),
+    RPL_ENDOFMOTD(376, PacketClientMotdEnd.class),
     RPL_YOUREOPER(381),
     RPL_REHASHING(382),
     RPL_YOURESERVICE(383),

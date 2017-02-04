@@ -40,12 +40,6 @@ public class IRCNetworkClient {
     private Map<String, ChatChannel> channels = new HashMap<>();
     private Map<String, ChatUser> users = new HashMap<>();
 
-    private List<String> motd = new LinkedList<>();
-
-    public List<String> getMotd() {
-        return motd;
-    }
-
     @Inject
     private Injector injector;
 

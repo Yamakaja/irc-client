@@ -116,20 +116,9 @@ How does that look in practice?
 :simba.spi.gt 376 Yamakaja_ :End of message of the day.
 ```
 
-Now that we know what we're dealing with we can start to plan:
-Since the server only has one MOTD we should be safe to store it in our `IRCNetworkClient` class:
-
-```java
-private List<String> motd = new LinkedList<>();
-
-public List<String> getMotd() {
-    return motd;
-}
-```
-
-Now lets define the packets, but before that a couple things to note:
+Lets define the packets, but before that a couple things to note:
 - Packets are named according to their direction. I.e. packets being sent to the server are _server_bound packets, packets coming from the server are _client_bound packets
-- Gernal packets are defined in `me.yamakaja.irc.client.network.packet.<server/client>`
+- General packets are defined in `me.yamakaja.irc.client.network.packet.<server/client>`
 - Command response packets are defined in `<...>.client.command`
 - Packets which are caused by one command can be grouped together, see `me.yamakaja.irc.client.network.packet.client.command.whois`.
 
@@ -157,7 +146,7 @@ public class PacketClientMotdStart extends CommandResponse {
 }
 ```
 
-The MOTD line packet contains the actual motd lines, thus we need to exactact and store those
+The MOTD line packet contains the actual motd lines, thus we need to extract and store those
 
 `PacketClientMotdLine.java`
 ```java
@@ -207,6 +196,17 @@ The event itself doesn't need to contain much information aswell, but because it
 `me.yamakaja.irc.client.network.event.packet.EndOfMotdEvent.java`
 ```java
 public class EndOfMotdEvent extends PacketEvent<PacketClientMotdEnd> {
+
+    private List<String> motd;
+
+    public EndOfMotdEvent(List<String> motd) {
+        this.motd = motd;
+    }
+
+    public List<String> getMotd() {
+        return motd;
+    }
+
 }
 ```
 
@@ -218,39 +218,42 @@ After that, we need to register our new packets and events in the `ClientboundPa
 RPL_MOTD(372, PacketClientMotdLine.class),
 RPL_ENDOFINFO(374),
 RPL_MOTDSTART(375, PacketClientMotdStart.class),
-RPL_ENDOFMOTD(376, PacketClientMotdEnd.class, EndOfMotdEvent.class),
+RPL_ENDOFMOTD(376, PacketClientMotdEnd.class),
 [...]
 ```
 
 All that's left to do now is to define a packet handler for the MOTD packets: Packet handlers belong into `me.yamakaja.irc.client.network.handler` 
 ```java
 public class MotdPacketHandler extends ChannelInboundHandlerAdapter {
-    
+
     @Inject
     private IRCNetworkClient client;
+
+    private List<String> motd = new LinkedList<>();
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         ClientboundPacket packet = (ClientboundPacket)msg;
-        
+
         switch(packet.getPacketType()) {
             case RPL_MOTDSTART:
-                client.getMotd().clear();
+                motd.clear();
                 return;
             case RPL_MOTD:
-                client.getMotd().add(((PacketClientMotdLine)packet).getLine());
+                motd.add(((PacketClientMotdLine)packet).getLine());
+                return;
+            case RPL_ENDOFMOTD:
+                client.getEventBus().callEventAsync(new EndOfMotdEvent(motd));
                 return;
         }
-        
+
         super.channelRead(ctx, msg);
     }
-    
+
 }
 ```
 
-Not intercepting `RPL_MOTDEND` packets will cause them to get passed through to the `EventPacketHandler` which calls the event we defined earlier.
-
-Also we must not forget the register the packet handler in our pipeline initializer:
+Also we must not forget to register the packet handler in our pipeline initializer:
 `IRCClientChannelInitializer.java`
 ```java
 [...]

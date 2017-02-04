@@ -37,7 +37,7 @@ public class CommandLineClient {
         ircClient.setRemote(host, port);
 
         Arrays.stream(new Class[]{ServerConnectionEventHandler.class, MessageReceiveHandler.class, WhoisListener.class, MotdListener.class})
-                .forEach(listener -> ircClient.getEventBus().registerListener((Listener)injector.getInstance(listener)));
+                .forEach(listener -> ircClient.getEventBus().registerListener((Listener) injector.getInstance(listener)));
 
         if (!ircClient.connect()) {
             System.out.println("An error occurred while trying to connect!");
