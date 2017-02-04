@@ -3,12 +3,15 @@ package me.yamakaja.irc.client;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import me.yamakaja.irc.client.handler.MessageReceiveHandler;
+import me.yamakaja.irc.client.handler.MotdListener;
 import me.yamakaja.irc.client.handler.ServerConnectionEventHandler;
 import me.yamakaja.irc.client.handler.WhoisListener;
 import me.yamakaja.irc.client.network.IRCNetworkClient;
 import me.yamakaja.irc.client.network.event.ServerConnectEvent;
 import net.lahwran.fevents.EventHandler;
+import net.lahwran.fevents.Listener;
 
+import java.util.Arrays;
 import java.util.Scanner;
 
 /**
@@ -33,9 +36,8 @@ public class CommandLineClient {
         IRCNetworkClient ircClient = injector.getInstance(IRCNetworkClient.class);
         ircClient.setRemote(host, port);
 
-        ircClient.getEventBus().registerListener(injector.getInstance(ServerConnectionEventHandler.class));
-        ircClient.getEventBus().registerListener(injector.getInstance(MessageReceiveHandler.class));
-        ircClient.getEventBus().registerListener(injector.getInstance(WhoisListener.class));
+        Arrays.stream(new Class[]{ServerConnectionEventHandler.class, MessageReceiveHandler.class, WhoisListener.class, MotdListener.class})
+                .forEach(listener -> ircClient.getEventBus().registerListener((Listener)injector.getInstance(listener)));
 
         if (!ircClient.connect()) {
             System.out.println("An error occurred while trying to connect!");
@@ -43,9 +45,9 @@ public class CommandLineClient {
         }
 
         ircClient.setNick("Yamakaja_");
-        ircClient.setUser("Yamakaja__", (byte)0, "*", "It's da fake Yamakaja!");
+        ircClient.setUser("Yamakaja__", (byte) 0, "*", "It's da fake Yamakaja!");
 
-        while(ircClient.isConnected()) {
+        while (ircClient.isConnected()) {
             ircClient.sendRaw(scanner.nextLine());
         }
 

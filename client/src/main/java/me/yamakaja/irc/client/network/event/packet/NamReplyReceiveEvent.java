@@ -10,7 +10,7 @@ public class NamReplyReceiveEvent extends PacketEvent<PacketClientNames> {
     private PacketClientNames packet;
 
     @Override
-    public void read(PacketClientNames packet) {
+    public void setPacket(PacketClientNames packet) {
         this.packet = packet;
     }
 

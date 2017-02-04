@@ -7,16 +7,5 @@ import me.yamakaja.irc.client.network.packet.client.PacketClientError;
  */
 public class ErrorReceiveEvent extends PacketEvent<PacketClientError> {
 
-    private PacketClientError packet;
-
-    @Override
-    public PacketClientError getPacket() {
-        return packet;
-    }
-
-    @Override
-    public void read(PacketClientError packet) {
-        this.packet = packet;
-    }
 
 }

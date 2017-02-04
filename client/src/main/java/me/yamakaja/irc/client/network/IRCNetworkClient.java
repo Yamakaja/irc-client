@@ -15,7 +15,6 @@ import io.netty.channel.socket.nio.NioSocketChannel;
 import me.yamakaja.irc.client.chat.ChatChannel;
 import me.yamakaja.irc.client.chat.ChatUser;
 import me.yamakaja.irc.client.network.event.ServerConnectEvent;
-import me.yamakaja.irc.client.network.event.ServerDisconnectEvent;
 import me.yamakaja.irc.client.network.handler.IRCClientChannelInitializer;
 import me.yamakaja.irc.client.network.packet.server.PacketServerNick;
 import me.yamakaja.irc.client.network.packet.server.PacketServerRaw;
@@ -23,8 +22,7 @@ import me.yamakaja.irc.client.network.packet.server.PacketServerUser;
 import me.yamakaja.irc.client.network.packet.server.PacketServerWhois;
 import net.lahwran.fevents.ThreadedEventBus;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by Yamakaja on 01.02.17.
@@ -41,6 +39,12 @@ public class IRCNetworkClient {
 
     private Map<String, ChatChannel> channels = new HashMap<>();
     private Map<String, ChatUser> users = new HashMap<>();
+
+    private List<String> motd = new LinkedList<>();
+
+    public List<String> getMotd() {
+        return motd;
+    }
 
     @Inject
     private Injector injector;

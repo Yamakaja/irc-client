@@ -7,24 +7,4 @@ import me.yamakaja.irc.client.network.packet.client.PacketClientPing;
  */
 public class PingReceiveEvent extends PacketEvent<PacketClientPing> {
 
-    private PacketClientPing packet;
-
-    public PingReceiveEvent(PacketClientPing packet) {
-        this.packet = packet;
-    }
-
-    public PingReceiveEvent() {
-
-    }
-
-    @Override
-    public PacketClientPing getPacket() {
-        return packet;
-    }
-
-    @Override
-    public void read(PacketClientPing packet) {
-        this.packet = packet;
-    }
-
 }

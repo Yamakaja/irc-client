@@ -10,7 +10,7 @@ import me.yamakaja.irc.client.network.packet.client.command.whois.*;
 /**
  * Created by Yamakaja on 03.02.17.
  */
-public class WhoisHandler extends ChannelInboundHandlerAdapter {
+public class WhoisPacketHandler extends ChannelInboundHandlerAdapter {
 
     @Inject
     private IRCNetworkClient client;

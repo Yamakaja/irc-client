@@ -7,19 +7,7 @@ import me.yamakaja.irc.client.network.packet.client.PacketClientMessage;
  */
 public class ServerMessageReceiveEvent extends PacketEvent<PacketClientMessage> {
 
-    private PacketClientMessage message;
-
-    @Override
-    public void read(PacketClientMessage packet) {
-        this.message = packet;
-    }
-
-    @Override
-    public PacketClientMessage getPacket() {
-        return message;
-    }
-
     public String getMessage() {
-        return message.getMessage();
+        return getPacket().getMessage();
     }
 }

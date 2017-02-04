@@ -10,7 +10,7 @@ import me.yamakaja.irc.client.network.packet.client.ClientboundPacket;
 /**
  * Created by Yamakaja on 01.02.17.
  */
-public class PacketEventHandler extends ChannelInboundHandlerAdapter {
+public class EventPacketHandler extends ChannelInboundHandlerAdapter {
 
     @Inject
     private IRCNetworkClient ircClient;

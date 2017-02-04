@@ -8,8 +8,14 @@ import net.lahwran.fevents.Event;
  */
 public abstract class PacketEvent<T extends ClientboundPacket> extends Event {
 
-    public abstract void read(T packet);
+    private T packet;
 
-    public abstract T getPacket();
+    public void setPacket(T packet) {
+        this.packet = packet;
+    }
+
+    public T getPacket() {
+        return packet;
+    }
 
 }

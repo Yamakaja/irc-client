@@ -3,6 +3,9 @@ package me.yamakaja.irc.client.network.packet.client;
 import me.yamakaja.irc.client.network.event.packet.*;
 import me.yamakaja.irc.client.network.packet.client.command.CommandResponse;
 import me.yamakaja.irc.client.network.packet.client.command.PacketClientNames;
+import me.yamakaja.irc.client.network.packet.client.command.motd.PacketClientMotdEnd;
+import me.yamakaja.irc.client.network.packet.client.command.motd.PacketClientMotdLine;
+import me.yamakaja.irc.client.network.packet.client.command.motd.PacketClientMotdStart;
 import me.yamakaja.irc.client.network.packet.client.command.whois.*;
 import org.jetbrains.annotations.Nullable;
 
@@ -84,10 +87,10 @@ public enum ClientboundPacketType {
     RPL_ENDOFBANLIST(368),
     RPL_ENDOFWHOWAS(369),
     RPL_INFO(371),
-    RPL_MOTD(372),
+    RPL_MOTD(372, PacketClientMotdLine.class),
     RPL_ENDOFINFO(374),
-    RPL_MOTDSTART(375),
-    RPL_ENDOFMOTD(376),
+    RPL_MOTDSTART(375, PacketClientMotdStart.class),
+    RPL_ENDOFMOTD(376, PacketClientMotdEnd.class, EndOfMotdEvent.class),
     RPL_YOUREOPER(381),
     RPL_REHASHING(382),
     RPL_YOURESERVICE(383),
@@ -210,7 +213,7 @@ public enum ClientboundPacketType {
             return null;
         try {
             PacketEvent event = eventClass.newInstance();
-            event.read(packet);
+            event.setPacket(packet);
             return event;
         } catch (InstantiationException | IllegalAccessException e) {
             e.printStackTrace();
