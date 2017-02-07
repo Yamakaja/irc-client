@@ -1,7 +1,11 @@
 package me.yamakaja.irc.client.network.packet.client;
 
 import me.yamakaja.irc.client.network.event.packet.*;
-import me.yamakaja.irc.client.network.packet.client.command.CommandResponse;
+import me.yamakaja.irc.client.network.packet.client.action.PacketAction;
+import me.yamakaja.irc.client.network.packet.client.action.PacketClientJoin;
+import me.yamakaja.irc.client.network.packet.client.action.PacketClientNick;
+import me.yamakaja.irc.client.network.packet.client.action.PacketClientPart;
+import me.yamakaja.irc.client.network.packet.client.command.PacketCommandResponse;
 import me.yamakaja.irc.client.network.packet.client.command.names.PacketClientNames;
 import me.yamakaja.irc.client.network.packet.client.command.motd.PacketClientMotdEnd;
 import me.yamakaja.irc.client.network.packet.client.command.motd.PacketClientMotdLine;
@@ -23,6 +27,9 @@ public enum ClientboundPacketType {
     PING(PacketClientPing.class, PingReceiveEvent.class),
     MESSAGE(PacketClientMessage.class, ServerMessageReceiveEvent.class),
     ERROR(PacketClientError.class, ErrorReceiveEvent.class),
+    JOIN(PacketClientJoin.class),
+    PART(PacketClientPart.class),
+    NICK(PacketClientNick.class),
 
     RPL_TRACECONNECTING(201),
     RPL_TRACEHANDSHAKE(202),
@@ -158,6 +165,7 @@ public enum ClientboundPacketType {
     ERR_UMODEUNKNOWNFLAG(501),
     ERR_USERSDONTMATCH(502);
 
+
     private static Map<Integer, ClientboundPacketType> idMap = new HashMap<>();
     private Class<? extends ClientboundPacket> packetClass;
     private Class<? extends PacketEvent> eventClass;
@@ -165,13 +173,16 @@ public enum ClientboundPacketType {
     private boolean isError;
     private boolean isCommandResponse;
 
+    ClientboundPacketType(Class<? extends PacketAction> actionPacket) {
+        this.packetClass = actionPacket;
+    }
 
     ClientboundPacketType(Class<? extends ClientboundPacket> packetClass, Class<? extends PacketEvent> eventClass) {
         this.packetClass = packetClass;
         this.eventClass = eventClass;
     }
 
-    ClientboundPacketType(int id, Class<? extends CommandResponse> packetClass, Class<? extends PacketEvent> eventClass) {
+    ClientboundPacketType(int id, Class<? extends PacketCommandResponse> packetClass, Class<? extends PacketEvent> eventClass) {
         this.id = id;
         this.packetClass = packetClass;
         this.eventClass = eventClass;
@@ -179,7 +190,7 @@ public enum ClientboundPacketType {
         this.isCommandResponse = true;
     }
 
-    ClientboundPacketType(int id, Class<? extends CommandResponse> packetClass) {
+    ClientboundPacketType(int id, Class<? extends PacketCommandResponse> packetClass) {
         this(id, packetClass, null);
     }
 

@@ -1,12 +1,12 @@
 package me.yamakaja.irc.client.network.packet.client.command.whois;
 
 import me.yamakaja.irc.client.network.packet.client.ClientboundPacketType;
-import me.yamakaja.irc.client.network.packet.client.command.CommandResponse;
+import me.yamakaja.irc.client.network.packet.client.command.PacketCommandResponse;
 
 /**
  * Created by Yamakaja on 03.02.17.
  */
-public class PacketClientWhoisEnd extends CommandResponse {
+public class PacketClientWhoisEnd extends PacketCommandResponse {
 
     private String nick;
 

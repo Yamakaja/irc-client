@@ -102,7 +102,6 @@ public class IRCClient {
 
     public void setNick(String name) {
         networkChannel.writeAndFlush(new PacketServerNick(name));
-        this.nick = name;
     }
 
     public void setUser(String name, byte mode, String host, String realname) {

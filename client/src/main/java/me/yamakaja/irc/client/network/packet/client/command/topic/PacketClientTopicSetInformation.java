@@ -1,14 +1,14 @@
 package me.yamakaja.irc.client.network.packet.client.command.topic;
 
 import me.yamakaja.irc.client.network.packet.client.ClientboundPacketType;
-import me.yamakaja.irc.client.network.packet.client.command.CommandResponse;
+import me.yamakaja.irc.client.network.packet.client.command.PacketCommandResponse;
 
 import java.util.Date;
 
 /**
  * Created by Yamakaja on 04.02.17.
  */
-public class PacketClientTopicSetInformation extends CommandResponse {
+public class PacketClientTopicSetInformation extends PacketCommandResponse {
 
     private String channel;
     private String setter;

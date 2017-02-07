@@ -1,12 +1,12 @@
 package me.yamakaja.irc.client.network.packet.client.command.names;
 
 import me.yamakaja.irc.client.network.packet.client.ClientboundPacketType;
-import me.yamakaja.irc.client.network.packet.client.command.CommandResponse;
+import me.yamakaja.irc.client.network.packet.client.command.PacketCommandResponse;
 
 /**
  * Created by Yamakaja on 04.02.17.
  */
-public class PacketClientNamesEnd extends CommandResponse {
+public class PacketClientNamesEnd extends PacketCommandResponse {
 
     private String channel;
 

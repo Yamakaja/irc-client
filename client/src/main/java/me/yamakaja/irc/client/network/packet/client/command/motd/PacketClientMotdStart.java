@@ -1,12 +1,12 @@
 package me.yamakaja.irc.client.network.packet.client.command.motd;
 
 import me.yamakaja.irc.client.network.packet.client.ClientboundPacketType;
-import me.yamakaja.irc.client.network.packet.client.command.CommandResponse;
+import me.yamakaja.irc.client.network.packet.client.command.PacketCommandResponse;
 
 /**
  * Created by Yamakaja on 04.02.17.
  */
-public class PacketClientMotdStart extends CommandResponse {
+public class PacketClientMotdStart extends PacketCommandResponse {
 
     @Override
     public void read(String data) {

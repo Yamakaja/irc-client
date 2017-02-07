@@ -1,7 +1,7 @@
 package me.yamakaja.irc.client.network.packet.client.command.names;
 
 import me.yamakaja.irc.client.network.packet.client.ClientboundPacketType;
-import me.yamakaja.irc.client.network.packet.client.command.CommandResponse;
+import me.yamakaja.irc.client.network.packet.client.command.PacketCommandResponse;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -9,7 +9,7 @@ import java.util.Collection;
 /**
  * Created by Yamakaja on 02.02.17.
  */
-public class PacketClientNames extends CommandResponse {
+public class PacketClientNames extends PacketCommandResponse {
 
     private String sender;
     private String receiver;

@@ -2,13 +2,13 @@ package me.yamakaja.irc.client.network.packet.client.command.whois;
 
 import me.yamakaja.irc.client.chat.ChatServer;
 import me.yamakaja.irc.client.network.packet.client.ClientboundPacketType;
-import me.yamakaja.irc.client.network.packet.client.command.CommandResponse;
+import me.yamakaja.irc.client.network.packet.client.command.PacketCommandResponse;
 import me.yamakaja.irc.client.network.util.StringUtils;
 
 /**
  * Created by Yamakaja on 03.02.17.
  */
-public class PacketClientWhoisServer extends CommandResponse {
+public class PacketClientWhoisServer extends PacketCommandResponse {
 
     private String nick;
     private ChatServer server;
