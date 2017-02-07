@@ -11,6 +11,7 @@ import me.yamakaja.irc.client.network.packet.client.command.motd.PacketClientMot
 import me.yamakaja.irc.client.network.packet.client.command.motd.PacketClientMotdLine;
 import me.yamakaja.irc.client.network.packet.client.command.motd.PacketClientMotdStart;
 import me.yamakaja.irc.client.network.packet.client.command.names.PacketClientNamesEnd;
+import me.yamakaja.irc.client.network.packet.client.command.server.*;
 import me.yamakaja.irc.client.network.packet.client.command.topic.PacketClientTopic;
 import me.yamakaja.irc.client.network.packet.client.command.topic.PacketClientTopicSetInformation;
 import me.yamakaja.irc.client.network.packet.client.command.whois.*;
@@ -30,6 +31,12 @@ public enum ClientboundPacketType {
     JOIN(PacketClientJoin.class),
     PART(PacketClientPart.class),
     NICK(PacketClientNick.class),
+
+    RPL_WELCOME(1, PacketClientWelcome.class),
+    RPL_YOURHOST(2, PacketClientHost.class),
+    RPL_CREATED(3, PacketClientCreated.class),
+    RPL_MYINFO(4, PacketClientServerInfo.class),
+    RPL_SERVEROPTIONS(5, PacketClientServerOptions.class),
 
     RPL_TRACECONNECTING(201),
     RPL_TRACEHANDSHAKE(202),

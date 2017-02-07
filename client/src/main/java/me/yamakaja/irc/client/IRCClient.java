@@ -13,7 +13,6 @@ import io.netty.channel.epoll.EpollSocketChannel;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import me.yamakaja.irc.client.chat.ChatChannel;
-import me.yamakaja.irc.client.chat.ChatUser;
 import me.yamakaja.irc.client.network.event.server.ServerConnectEvent;
 import me.yamakaja.irc.client.network.handler.IRCClientChannelInitializer;
 import me.yamakaja.irc.client.network.packet.server.PacketServerNick;
@@ -22,7 +21,10 @@ import me.yamakaja.irc.client.network.packet.server.PacketServerUser;
 import me.yamakaja.irc.client.network.packet.server.PacketServerWhois;
 import net.lahwran.fevents.ThreadedEventBus;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Yamakaja on 01.02.17.
@@ -39,10 +41,17 @@ public class IRCClient {
 
     private Map<String, ChatChannel> channels = new HashMap<>();
 
-    private ChatUser connectedUser;
-
-    private String nick;
     private String user;
+    private String serverHost;
+
+    private String created;
+
+    private String daemon;
+
+    private String userModes;
+    private String channelModes;
+
+    private List<String> serverOptions = new ArrayList<>();
 
     @Inject
     private Injector injector;
@@ -104,7 +113,15 @@ public class IRCClient {
         networkChannel.writeAndFlush(new PacketServerNick(name));
     }
 
-    public void setUser(String name, byte mode, String host, String realname) {
+    /**
+     * Sends a USER packet to the server with the required arguments
+     *
+     * @param name     The username / ident
+     * @param mode     The initial client modes
+     * @param host     *
+     * @param realname The "realname" displayed in WHOIS
+     */
+    public void sendUser(String name, byte mode, String host, String realname) {
         networkChannel.writeAndFlush(new PacketServerUser(name, mode, host, realname));
     }
 
@@ -128,8 +145,106 @@ public class IRCClient {
         return channel;
     }
 
+    /**
+     * @param user Checks if the passed user is the irc bot. This takes either the full [nick]![ident]@[host] or just a nick
+     * @return Whether or not the checked user actually is the bot
+     * @throws NullPointerException when given a null user
+     */
+    public boolean isUser(String user) {
+        if (user.contains("!")) {
+            return user.equals(this.user);
+        } else {
+            return user.equals(this.user.substring(0, this.user.indexOf('!') - 1));
+        }
+    }
+
+    /**
+     * Interal use only!
+     *
+     * @param serverHost
+     */
+    public void setServerName(String serverHost) {
+        this.serverHost = serverHost;
+    }
+
+    /**
+     * Usually the server you actually connected to within a network
+     *
+     * @return The name of the server you're connected to
+     */
+    public String getServerHost() {
+        return serverHost;
+    }
+
+    /**
+     * @return The full user and host mask
+     */
+    public String getUser() {
+        return user;
+    }
+
+    /**
+     * Internal use only!
+     *
+     * @param user The new hostmask to set
+     */
+    public void setUser(String user) {
+        this.user = user;
+    }
+
+    /**
+     * @return A string that represents the date the irc server was started, not when it was first launched. Could be used for uptime measurement
+     */
+    public String getCreated() {
+        return created;
+    }
+
+    /**
+     * Internal use only!
+     *
+     * @param created Creation time
+     */
+    public void setCreated(String created) {
+        this.created = created;
+    }
+
+    /**
+     * @return The servers irc daemon (version)
+     */
+    public String getDaemon() {
+        return daemon;
+    }
+
+    /**
+     * Internal use only!
+     * @param daemon version
+     */
+    public void setDaemon(String daemon) {
+        this.daemon = daemon;
+    }
+
     public void sendWhois(String nick) {
         networkChannel.writeAndFlush(new PacketServerWhois(nick));
+    }
+
+    public String getUserModes() {
+        return userModes;
+    }
+
+    public void setUserModes(String userModes) {
+        this.userModes = userModes;
+    }
+
+    public String getChannelModes() {
+        return channelModes;
+    }
+
+    public void setChannelModes(String channelModes) {
+        this.channelModes = channelModes;
+    }
+
+    public List<String> getServerOptions() {
+        return serverOptions;
     }
 
 }
