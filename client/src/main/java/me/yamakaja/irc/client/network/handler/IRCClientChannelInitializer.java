@@ -27,6 +27,7 @@ public class IRCClientChannelInitializer extends ChannelInitializer<SocketChanne
                 .addLast(injector.getInstance(WhoisPacketHandler.class))
                 .addLast(injector.getInstance(MotdPacketHandler.class))
                 .addLast(injector.getInstance(ChannelPacketHandler.class))
+                .addLast(injector.getInstance(UserPacketHandler.class))
 
                 .addLast(injector.getInstance(EventPacketHandler.class))
 

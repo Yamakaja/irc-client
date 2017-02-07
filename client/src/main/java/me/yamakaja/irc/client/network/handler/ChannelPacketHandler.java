@@ -3,11 +3,15 @@ package me.yamakaja.irc.client.network.handler;
 import com.google.inject.Inject;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
-import me.yamakaja.irc.client.chat.ChatChannel;
 import me.yamakaja.irc.client.IRCClient;
+import me.yamakaja.irc.client.chat.ChatChannel;
 import me.yamakaja.irc.client.network.event.channel.ChannelNamesEvent;
 import me.yamakaja.irc.client.network.event.channel.TopicEvent;
+import me.yamakaja.irc.client.network.event.channel.UserJoinEvent;
+import me.yamakaja.irc.client.network.event.channel.UserPartEvent;
 import me.yamakaja.irc.client.network.packet.client.ClientboundPacket;
+import me.yamakaja.irc.client.network.packet.client.action.PacketClientJoin;
+import me.yamakaja.irc.client.network.packet.client.action.PacketClientPart;
 import me.yamakaja.irc.client.network.packet.client.command.names.PacketClientNames;
 import me.yamakaja.irc.client.network.packet.client.command.names.PacketClientNamesEnd;
 import me.yamakaja.irc.client.network.packet.client.command.topic.PacketClientTopic;
@@ -23,31 +27,44 @@ public class ChannelPacketHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        ClientboundPacket packet = (ClientboundPacket) msg;
 
         ChatChannel channel;
-        switch (packet.getPacketType()) {
-            case RPL_TOPIC:
-                handleTopic((PacketClientTopic) packet);
+        switch (((ClientboundPacket) msg).getPacketType()) {
+            case RPL_TOPIC: {
+                handleTopic((PacketClientTopic) msg);
                 return;
-            case RPL_TOPICINFO:
-                PacketClientTopicSetInformation info = (PacketClientTopicSetInformation) msg;
-                channel = client.getChannel(info.getChannel());
-                channel.setTopicSetter(info.getSetter());
-                channel.setTopicTime(info.getTime());
+            }
+            case RPL_TOPICINFO: {
+                PacketClientTopicSetInformation packet = (PacketClientTopicSetInformation) msg;
+                channel = client.getChannel(packet.getChannel());
+                channel.setTopicSetter(packet.getSetter());
+                channel.setTopicTime(packet.getTime());
                 client.getEventBus().callEventAsync(new TopicEvent(channel));
                 return;
-            case RPL_NAMREPLY:
-                PacketClientNames names = (PacketClientNames) msg;
-                channel = client.getChannel(names.getChannel());
-                channel.addUsers(names.getNicks());
+            }
+            case RPL_NAMREPLY: {
+                PacketClientNames packet = (PacketClientNames) msg;
+                channel = client.getChannel(packet.getChannel());
+                channel.addUsers(packet.getNicks());
                 return;
-            case RPL_ENDOFNAMES:
-                PacketClientNamesEnd namesEnd = (PacketClientNamesEnd) msg;
-                channel = client.getChannel(namesEnd.getChannel());
+            }
+            case RPL_ENDOFNAMES: {
+                PacketClientNamesEnd packet = (PacketClientNamesEnd) msg;
+                channel = client.getChannel(packet.getChannel());
                 channel.finishUsers();
                 client.getEventBus().callEventAsync(new ChannelNamesEvent(channel));
                 return;
+            }
+            case JOIN: {
+                PacketClientJoin packet = (PacketClientJoin) msg;
+                client.getEventBus().callEventAsync(new UserJoinEvent(packet.getSender(), client.getChannel(packet.getChannel())));
+                return;
+            }
+            case PART: {
+                PacketClientPart part = (PacketClientPart) msg;
+                client.getEventBus().callEventAsync(new UserPartEvent(part.getSender(), client.getChannel(part.getChannel()), part.getReason()));
+                return;
+            }
         }
 
         super.channelRead(ctx, msg);

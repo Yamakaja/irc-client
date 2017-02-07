@@ -4,7 +4,7 @@ import me.yamakaja.irc.client.chat.ChatChannel;
 import net.lahwran.fevents.Event;
 
 /**
- * Created by Yamakaja on 06.02.17.
+ * Created by Yamakaja on 07.02.17.
  */
 public class UserJoinEvent extends Event {
 
@@ -16,12 +16,17 @@ public class UserJoinEvent extends Event {
         this.channel = channel;
     }
 
+    /**
+     * @return The user who joined
+     */
     public String getUser() {
         return user;
     }
 
+    /**
+     * @return The channel they joined
+     */
     public ChatChannel getChannel() {
         return channel;
     }
-
 }
