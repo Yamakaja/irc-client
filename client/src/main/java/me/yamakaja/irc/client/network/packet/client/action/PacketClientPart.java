@@ -15,10 +15,9 @@ public class PacketClientPart extends PacketAction {
     public void read(String data) {
         String[] split = data.split(" ");
         this.sender = split[0].substring(1);
-        this.channel = split[2].substring(1);
+        this.channel = split[2];
         if (split.length > 3)
             reason = StringUtils.join(split, " ", 3, split.length - 1).substring(1);
-
     }
 
     @Override

@@ -43,6 +43,7 @@ public class IRCClient {
 
     private String user;
     private String serverHost;
+    private String displayedUser;
 
     private String created;
 
@@ -152,14 +153,14 @@ public class IRCClient {
      */
     public boolean isUser(String user) {
         if (user.contains("!")) {
-            return user.equals(this.user);
+            return user.equals(displayedUser) || user.equals(this.user);
         } else {
-            return user.equals(this.user.substring(0, this.user.indexOf('!') - 1));
+            return user.equals(this.user.substring(0, this.user.indexOf('!')));
         }
     }
 
     /**
-     * Interal use only!
+     * Internal use only!
      *
      * @param serverHost
      */
@@ -217,10 +218,34 @@ public class IRCClient {
 
     /**
      * Internal use only!
+     *
      * @param daemon version
      */
     public void setDaemon(String daemon) {
         this.daemon = daemon;
+    }
+
+    /**
+     * @return The host displayed by the server. May differ from the actual user hostname (Hostmasking / IP Protection)
+     */
+    public String getDisplayedUser() {
+        return displayedUser;
+    }
+
+    /**
+     * Internal use only!
+     *
+     * @param displayedUser host
+     */
+    public void setDisplayedUser(String displayedUser) {
+        this.displayedUser = displayedUser;
+    }
+
+    /**
+     * @return Whether or not the displayed hostname differs from the users actual hostname
+     */
+    public boolean hasDifferentDisplayHostname() {
+        return displayedUser != null && !displayedUser.equals(user.substring(user.indexOf('@') + 1));
     }
 
     public void sendWhois(String nick) {

@@ -117,6 +117,7 @@ public enum ClientboundPacketType {
     RPL_USERS(393),
     RPL_ENDOFUSERS(394),
     RPL_NOUSERS(395),
+    RPL_DISPHOST(396, PacketClientDisplayedHost.class),
 
     ERR_NOSUCHNICK(401),
     ERR_NOSUCHSERVER(402),

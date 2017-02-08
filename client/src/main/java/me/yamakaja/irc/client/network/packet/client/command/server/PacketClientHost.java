@@ -14,7 +14,7 @@ public class PacketClientHost extends PacketCommandResponse {
     @Override
     public void read(String data) {
         String[] split = data.split(" ");
-        serverHost = split[6].substring(0, split[6].length() - 2);
+        serverHost = split[6].substring(0, split[6].length() - 1);
         daemon = split[9];
     }
 

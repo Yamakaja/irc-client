@@ -43,12 +43,29 @@ public class CommandLineClient {
         ircClient.setNick("Yamakaja_");
         ircClient.sendUser("Yamakaja__", (byte) 0, "*", "It's da fake Yamakaja!");
 
+        String line;
+        loop:
         while (ircClient.isConnected()) {
-            ircClient.sendRaw(scanner.nextLine());
+            line = scanner.nextLine();
+
+            switch(line.toLowerCase().split(" ")[0]) {
+                case "/quit":
+                    break loop;
+
+                case "/info": {
+                    System.out.println(ircClient.getUser() + " on " + ircClient.getHost() + " running " + ircClient.getDaemon() + " (running since " + ircClient.getCreated() + ")");
+                    System.out.println("Server options: ");
+                    System.out.println(ircClient.getServerOptions().toString());
+                    System.out.println("Available user modes: " + ircClient.getUserModes());
+                    System.out.println("Available channel modes: " + ircClient.getChannelModes());
+                    continue loop;
+                }
+            }
+
+            ircClient.sendRaw(line);
         }
 
         ircClient.cleanup();
-
     }
 
     @EventHandler

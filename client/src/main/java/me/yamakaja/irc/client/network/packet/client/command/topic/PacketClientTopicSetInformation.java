@@ -21,7 +21,7 @@ public class PacketClientTopicSetInformation extends PacketCommandResponse {
         channel = split[3];
         setter = split[4];
         if (setter.contains("!"))
-            setter = setter.substring(0, setter.indexOf("!") - 1);
+            setter = setter.substring(0, setter.indexOf("!"));
         time = new Date(Long.parseLong(split[5]) * 1000);
     }
 

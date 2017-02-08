@@ -12,7 +12,7 @@ public class PacketClientServerOptions extends PacketCommandResponse {
 
     @Override
     public void read(String data) {
-        String[] split = data.substring(0, data.indexOf(':', 1) - 2).split(" ");
+        String[] split = data.substring(0, data.indexOf(":are", 1)).split(" ");
         options = new String[split.length - 3];
         System.arraycopy(split, 3, options, 0, split.length - 3);
     }

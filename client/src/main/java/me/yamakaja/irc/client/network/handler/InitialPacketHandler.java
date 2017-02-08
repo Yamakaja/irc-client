@@ -44,6 +44,9 @@ public class InitialPacketHandler extends ChannelInboundHandlerAdapter {
             case RPL_SERVEROPTIONS:
                 client.getServerOptions().addAll(Arrays.asList(((PacketClientServerOptions) msg).getOptions()));
                 return;
+            case RPL_DISPHOST:
+                client.setDisplayedUser(client.getUser().substring(0, client.getUser().indexOf('@') + 1) + ((PacketClientDisplayedHost)msg).getDisplayedHost());
+                return;
         }
 
         super.channelRead(ctx, msg);
