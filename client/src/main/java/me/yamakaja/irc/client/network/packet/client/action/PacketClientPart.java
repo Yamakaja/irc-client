@@ -32,4 +32,5 @@ public class PacketClientPart extends PacketAction {
     public String getReason() {
         return reason;
     }
+
 }
