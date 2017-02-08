@@ -2,7 +2,7 @@ package me.yamakaja.irc.client.network.packet.client.command.whois;
 
 import me.yamakaja.irc.client.network.packet.client.ClientboundPacketType;
 import me.yamakaja.irc.client.network.packet.client.command.PacketCommandResponse;
-import me.yamakaja.irc.client.network.util.StringUtils;
+import me.yamakaja.irc.client.util.StringUtils;
 
 /**
  * Created by Yamakaja on 03.02.17.

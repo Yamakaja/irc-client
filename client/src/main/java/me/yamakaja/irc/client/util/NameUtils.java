@@ -1,4 +1,4 @@
-package me.yamakaja.irc.client.network.util;
+package me.yamakaja.irc.client.util;
 
 /**
  * Created by Yamakaja on 08.02.17.

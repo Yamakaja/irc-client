@@ -2,7 +2,7 @@ package me.yamakaja.irc.client.network.packet.client.command.whois;
 
 import me.yamakaja.irc.client.network.packet.client.ClientboundPacketType;
 import me.yamakaja.irc.client.network.packet.client.command.PacketCommandResponse;
-import me.yamakaja.irc.client.network.util.Tuple;
+import me.yamakaja.irc.client.util.Tuple;
 
 import java.util.Arrays;
 
