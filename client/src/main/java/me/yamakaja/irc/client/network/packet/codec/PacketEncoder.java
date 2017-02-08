@@ -13,7 +13,7 @@ public class PacketEncoder extends MessageToByteEncoder<ServerboundPacket> {
     @Override
     protected void encode(ChannelHandlerContext channelHandlerContext, ServerboundPacket packet, ByteBuf byteBuf) throws Exception {
         byteBuf.writeBytes(packet.getEncoded().getBytes("UTF-8"));
-        System.err.println(" --> " + packet.getEncoded());
+        System.err.print(" --> " + packet.getEncoded());
     }
 
 }

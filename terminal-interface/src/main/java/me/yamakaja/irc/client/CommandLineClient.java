@@ -32,7 +32,14 @@ public class CommandLineClient {
         IRCClient ircClient = injector.getInstance(IRCClient.class);
         ircClient.setRemote(host, port);
 
-        Arrays.stream(new Class[]{ServerConnectionEventHandler.class, WhoisListener.class, MotdListener.class, NamesListener.class, UserListener.class})
+        Arrays.stream(new Class[]{
+                ServerConnectionEventHandler.class,
+                WhoisListener.class,
+                MotdListener.class,
+                NamesListener.class,
+                UserListener.class,
+                ServerMessageListener.class
+        })
                 .forEach(listener -> ircClient.getEventBus().registerListener((Listener) injector.getInstance(listener)));
 
         if (!ircClient.connect()) {
@@ -48,7 +55,7 @@ public class CommandLineClient {
         while (ircClient.isConnected()) {
             line = scanner.nextLine();
 
-            switch(line.toLowerCase().split(" ")[0]) {
+            switch (line.toLowerCase().split(" ")[0]) {
                 case "/quit":
                     break loop;
 

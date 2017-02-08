@@ -1,9 +1,9 @@
 package me.yamakaja.irc.client.network.packet.client;
 
 /**
- * Created by Yamakaja on 01.02.17.
+ * Created by Yamakaja on 08.02.17.
  */
-public class PacketClientMessage extends ClientboundPacket {
+public class PacketClientServerMessage extends ClientboundPacket {
 
     private String message;
 
@@ -12,12 +12,13 @@ public class PacketClientMessage extends ClientboundPacket {
         message = data;
     }
 
-    @Override
-    public ClientboundPacketType getPacketType() {
-        return ClientboundPacketType.MESSAGE;
-    }
-
     public String getMessage() {
         return message;
     }
+
+    @Override
+    public ClientboundPacketType getPacketType() {
+        return ClientboundPacketType.SERVERMESSAGE;
+    }
+
 }

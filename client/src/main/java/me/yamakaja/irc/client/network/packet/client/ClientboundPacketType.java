@@ -1,10 +1,7 @@
 package me.yamakaja.irc.client.network.packet.client;
 
 import me.yamakaja.irc.client.network.event.packet.*;
-import me.yamakaja.irc.client.network.packet.client.action.PacketAction;
-import me.yamakaja.irc.client.network.packet.client.action.PacketClientJoin;
-import me.yamakaja.irc.client.network.packet.client.action.PacketClientNick;
-import me.yamakaja.irc.client.network.packet.client.action.PacketClientPart;
+import me.yamakaja.irc.client.network.packet.client.action.*;
 import me.yamakaja.irc.client.network.packet.client.command.PacketCommandResponse;
 import me.yamakaja.irc.client.network.packet.client.command.names.PacketClientNames;
 import me.yamakaja.irc.client.network.packet.client.command.motd.PacketClientMotdEnd;
@@ -26,11 +23,12 @@ import java.util.Map;
 public enum ClientboundPacketType {
 
     PING(PacketClientPing.class, PingReceiveEvent.class),
-    MESSAGE(PacketClientMessage.class, ServerMessageReceiveEvent.class),
     ERROR(PacketClientError.class, ErrorReceiveEvent.class),
+    SERVERMESSAGE(PacketClientServerMessage.class, ServerMessageEvent.class),
     JOIN(PacketClientJoin.class),
     PART(PacketClientPart.class),
     NICK(PacketClientNick.class),
+    PRIVMSG(PacketClientMessage.class),
 
     RPL_WELCOME(1, PacketClientWelcome.class),
     RPL_YOURHOST(2, PacketClientHost.class),
@@ -223,7 +221,7 @@ public enum ClientboundPacketType {
     }
 
     public Class<? extends ClientboundPacket> getPacketClass() {
-        return packetClass == null ? MESSAGE.getPacketClass() : packetClass;
+        return packetClass == null ? SERVERMESSAGE.getPacketClass() : packetClass;
     }
 
     public Class<? extends PacketEvent> getEventClass() {
