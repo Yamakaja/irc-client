@@ -1,4 +1,4 @@
-package me.yamakaja.irc.client.network.util.task;
+package me.yamakaja.irc.client.util.task;
 
 import com.google.inject.Inject;
 import me.yamakaja.irc.client.IRCClient;

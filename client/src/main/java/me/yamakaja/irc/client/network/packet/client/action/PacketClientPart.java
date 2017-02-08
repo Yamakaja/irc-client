@@ -1,7 +1,7 @@
 package me.yamakaja.irc.client.network.packet.client.action;
 
 import me.yamakaja.irc.client.network.packet.client.ClientboundPacketType;
-import me.yamakaja.irc.client.network.util.StringUtils;
+import me.yamakaja.irc.client.util.StringUtils;
 
 /**
  * Created by Yamakaja on 06.02.17.

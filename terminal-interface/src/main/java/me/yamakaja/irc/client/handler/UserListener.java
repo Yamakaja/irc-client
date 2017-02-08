@@ -5,7 +5,7 @@ import me.yamakaja.irc.client.IRCClient;
 import me.yamakaja.irc.client.network.event.channel.UserJoinEvent;
 import me.yamakaja.irc.client.network.event.channel.UserPartEvent;
 import me.yamakaja.irc.client.network.event.user.UserNickEvent;
-import me.yamakaja.irc.client.network.util.NameUtils;
+import me.yamakaja.irc.client.util.NameUtils;
 import net.lahwran.fevents.EventHandler;
 import net.lahwran.fevents.Listener;
 
