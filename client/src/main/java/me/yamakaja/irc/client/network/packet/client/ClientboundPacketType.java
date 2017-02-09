@@ -1,6 +1,7 @@
 package me.yamakaja.irc.client.network.packet.client;
 
 import me.yamakaja.irc.client.network.event.packet.*;
+import me.yamakaja.irc.client.network.event.server.ServerUsersInfoEvent;
 import me.yamakaja.irc.client.network.packet.client.action.*;
 import me.yamakaja.irc.client.network.packet.client.command.PacketCommandResponse;
 import me.yamakaja.irc.client.network.packet.client.command.names.PacketClientNames;
@@ -57,11 +58,11 @@ public enum ClientboundPacketType {
     RPL_SERVLISTEND(235),
     RPL_STATSUPTIME(242),
     RPL_STATSOLINE(243),
-    RPL_LUSERCLIENT(251),
-    RPL_LUSEROP(252),
+    RPL_LUSERCLIENT(251, PacketClientUsers.class, GroupedUsersOnlineEvent.class),
+    RPL_LUSEROP(252, PacketClientOperators.class, OperatorCountEvent.class),
     RPL_LUSERUNKNOWN(253),
-    RPL_LUSERCHANNELS(254),
-    RPL_LUSERME(255),
+    RPL_LUSERCHANNELS(254, PacketClientChannels.class, ChannelCountEvent.class),
+    RPL_LUSERME(255, PacketClientLocalServerConnectionInfo.class, ServerUsersInfoEvent.class),
     RPL_ADMINME(256),
     RPL_ADMINLOC1(257),
     RPL_ADMINLOC2(258),
@@ -69,6 +70,8 @@ public enum ClientboundPacketType {
     RPL_TRACELOG(261),
     RPL_TRACEEND(262),
     RPL_TRYAGAIN(263),
+    RPL_USERSLOCAL(265, PacketClientLocalUsers.class, LocalUsersOnlineEvent.class),
+    RPL_USERSGLOBAL(266, PacketClientGlobalUsers.class, GlobalUsersOnlineEvent.class),
     RPL_AWAY(301, PacketClientWhoisAway.class),
     RPL_USERHOST(302),
     RPL_ISON(303),
