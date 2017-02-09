@@ -29,6 +29,8 @@ public enum ClientboundPacketType {
     PART(PacketClientPart.class),
     NICK(PacketClientNick.class),
     PRIVMSG(PacketClientMessage.class),
+    QUIT(PacketClientQuit.class),
+    NOTICE(PacketClientNotice.class),
 
     RPL_WELCOME(1, PacketClientWelcome.class),
     RPL_YOURHOST(2, PacketClientHost.class),

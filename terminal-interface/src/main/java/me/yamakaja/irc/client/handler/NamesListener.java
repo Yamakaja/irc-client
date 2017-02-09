@@ -11,8 +11,7 @@ public class NamesListener implements Listener {
 
     @EventHandler
     public void onNamesEvent(ChannelNamesEvent event) {
-        System.out.println("Users in " + event.getChannel().getName());
-        System.out.println(event.getChannel().getUsers());
+        System.out.println("Users in " + event.getChannel().getName() + ": " + event.getChannel().getUsers());
     }
 
 }

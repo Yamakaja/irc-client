@@ -7,6 +7,7 @@ import me.yamakaja.irc.client.network.event.channel.UserJoinEvent;
 import me.yamakaja.irc.client.network.event.channel.UserPartEvent;
 import me.yamakaja.irc.client.network.event.user.UserMessageEvent;
 import me.yamakaja.irc.client.network.event.user.UserNickEvent;
+import me.yamakaja.irc.client.network.event.user.UserQuitEvent;
 import me.yamakaja.irc.client.util.NameUtils;
 import net.lahwran.fevents.EventHandler;
 import net.lahwran.fevents.Listener;
@@ -51,7 +52,12 @@ public class UserListener implements Listener {
 
     @EventHandler
     public void onNickChange(UserNickEvent e) {
-        System.out.println(e.getUser() + " --> " + e.getTo());
+        System.out.println(NameUtils.getNick(e.getUser()) + " is now known as " + e.getTo() + "!");
+    }
+
+    @EventHandler
+    public void onUserQuit(UserQuitEvent e) {
+        System.out.println("[-] " + NameUtils.getNick(e.getUser()) + (e.getReason() != null ? " " + e.getReason(): ""));
     }
 
 }
