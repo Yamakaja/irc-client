@@ -9,11 +9,13 @@ import me.yamakaja.irc.client.network.event.server.ServerNoticeEvent;
 import me.yamakaja.irc.client.network.event.user.UserMessageEvent;
 import me.yamakaja.irc.client.network.event.user.UserNickEvent;
 import me.yamakaja.irc.client.network.event.user.UserQuitEvent;
+import me.yamakaja.irc.client.network.event.user.UserUniqueIdEvent;
 import me.yamakaja.irc.client.network.packet.client.ClientboundPacket;
 import me.yamakaja.irc.client.network.packet.client.action.PacketClientMessage;
 import me.yamakaja.irc.client.network.packet.client.action.PacketClientNick;
 import me.yamakaja.irc.client.network.packet.client.action.PacketClientNotice;
 import me.yamakaja.irc.client.network.packet.client.action.PacketClientQuit;
+import me.yamakaja.irc.client.network.packet.client.command.server.PacketClientUniqueId;
 
 /**
  * Created by Yamakaja on 07.02.17.
@@ -49,6 +51,10 @@ public class UserPacketHandler extends ChannelInboundHandlerAdapter {
             case NOTICE: {
                 PacketClientNotice packet = (PacketClientNotice) originalPacket;
                 client.getEventBus().callEventAsync(new ServerNoticeEvent(packet.getTarget(), packet.getMessage()));
+                return;
+            }
+            case RPL_UNIQUEID: {
+                client.getEventBus().callEventAsync(new UserUniqueIdEvent(((PacketClientUniqueId) msg).getUniqueId()));
                 return;
             }
         }

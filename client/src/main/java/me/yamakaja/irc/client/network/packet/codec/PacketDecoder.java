@@ -33,8 +33,6 @@ public class PacketDecoder extends ByteToMessageDecoder {
         String message = byteBuf.readBytes(byteBuf.readableBytes()).toString(UTF_8);
         String[] splitMessage = message.split(" ");
 
-        //System.err.println(" <-- " + message);
-
         ClientboundPacketType type = message.startsWith(":") ? parseMessagePacket(splitMessage) : ClientboundPacketType.valueOf(splitMessage[0]);
         ClientboundPacket packet = type.getPacketClass().newInstance();
         packet.read(message);

@@ -17,7 +17,7 @@ public class ServerMessageListener implements Listener {
 
     @EventHandler
     public void onNotice(ServerNoticeEvent e) {
-        System.out.println("[" + e.getTarget() + "] <NOTICE> " + e.getMessage());
+        System.out.println("[NOTICE] <" + e.getTarget() + "> " + e.getMessage());
     }
 
 }

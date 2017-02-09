@@ -37,6 +37,7 @@ public enum ClientboundPacketType {
     RPL_CREATED(3, PacketClientCreated.class),
     RPL_MYINFO(4, PacketClientServerInfo.class),
     RPL_SERVEROPTIONS(5, PacketClientServerOptions.class),
+    RPL_UNIQUEID(42, PacketClientUniqueId.class),
 
     RPL_TRACECONNECTING(201),
     RPL_TRACEHANDSHAKE(202),
