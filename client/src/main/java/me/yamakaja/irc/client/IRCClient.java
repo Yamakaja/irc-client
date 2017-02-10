@@ -18,10 +18,7 @@ import me.yamakaja.irc.client.network.handler.IRCClientChannelInitializer;
 import me.yamakaja.irc.client.network.packet.server.*;
 import net.lahwran.fevents.ThreadedEventBus;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by Yamakaja on 01.02.17.

@@ -1,10 +1,14 @@
 package me.yamakaja.irc.client.handler;
 
+import me.yamakaja.irc.client.chat.ChatChannel;
+import me.yamakaja.irc.client.network.event.channel.ChannelListEvent;
 import me.yamakaja.irc.client.network.event.packet.*;
 import me.yamakaja.irc.client.network.event.server.ServerNoticeEvent;
 import me.yamakaja.irc.client.network.event.server.ServerUsersInfoEvent;
 import net.lahwran.fevents.EventHandler;
 import net.lahwran.fevents.Listener;
+
+import java.util.stream.Collectors;
 
 /**
  * Created by Yamakaja on 08.02.17.
@@ -49,6 +53,12 @@ public class ServerMessageListener implements Listener {
     @EventHandler
     public void onChannels(ChannelCountEvent e) {
         System.out.println("Channels: " + e.getPacket().getCount());
+    }
+
+    @EventHandler
+    public void onChannelList(ChannelListEvent e) {
+        System.out.println("Channel list arrived, containing: "
+                + e.getChannels().stream().map(ChatChannel::getName).collect(Collectors.toList()).toString());
     }
 
 }

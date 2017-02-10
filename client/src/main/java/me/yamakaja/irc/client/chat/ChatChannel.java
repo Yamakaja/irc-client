@@ -18,6 +18,9 @@ public class ChatChannel {
 
     private String name;
     private String topic;
+    private String modes;
+
+    private int userCount;
 
     private List<String> users = new LinkedList<>();
     private boolean finishedNames = false;
@@ -95,10 +98,11 @@ public class ChatChannel {
         return "ChatChannel{" +
                 "name='" + name + '\'' +
                 ", topic='" + topic + '\'' +
+                ", modes='" + modes + '\'' +
+                ", userCount=" + userCount +
                 ", users=" + users +
-                ", finishedNames=" + finishedNames +
                 ", topicSetter='" + topicSetter + '\'' +
-                ", topicTime=" + topicTime +
+                ", topicTime='" + topicTime.toString() + '\'' +
                 ", joined=" + joined +
                 '}';
     }
@@ -167,6 +171,22 @@ public class ChatChannel {
             throw new IllegalStateException("Cannot leave " + this.name + " if you haven't joined it before!");
 
         this.ircClient.sendPacket(new PacketServerPart(this.name, message));
+    }
+
+    public String getModes() {
+        return modes;
+    }
+
+    public int getUserCount() {
+        return userCount;
+    }
+
+    public void setModes(String modes) {
+        this.modes = modes;
+    }
+
+    public void setUserCount(int userCount) {
+        this.userCount = userCount;
     }
 
 }

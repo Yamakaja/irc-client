@@ -138,6 +138,16 @@ public class CommandLineClient {
                 }
         );
 
+        commandProcessors.put("raw",
+                (client, command) -> {
+                    if(command.length < 2) {
+                        System.out.println("Usage: /raw <command>");
+                        return;
+                    }
+
+                    client.sendRaw(StringUtils.join(command, " ", 1, command.length - 1));
+                });
+
         String line;
         while (ircClient.isConnected()) {
             line = scanner.nextLine();

@@ -4,6 +4,9 @@ import me.yamakaja.irc.client.network.event.packet.*;
 import me.yamakaja.irc.client.network.event.server.ServerUsersInfoEvent;
 import me.yamakaja.irc.client.network.packet.client.action.*;
 import me.yamakaja.irc.client.network.packet.client.command.PacketCommandResponse;
+import me.yamakaja.irc.client.network.packet.client.command.list.PacketClientChannelsBegin;
+import me.yamakaja.irc.client.network.packet.client.command.list.PacketClientChannelsEnd;
+import me.yamakaja.irc.client.network.packet.client.command.list.PacketClientChannelsEntry;
 import me.yamakaja.irc.client.network.packet.client.command.names.PacketClientNames;
 import me.yamakaja.irc.client.network.packet.client.command.motd.PacketClientMotdEnd;
 import me.yamakaja.irc.client.network.packet.client.command.motd.PacketClientMotdLine;
@@ -85,14 +88,14 @@ public enum ClientboundPacketType {
     RPL_WHOISIDLE(317, PacketClientWhoisIdle.class),
     RPL_ENDOFWHOIS(318, PacketClientWhoisEnd.class),
     RPL_WHOISCHANNELS(319, PacketClientWhoisChannels.class),
-    RPL_LISTSTART(321),
-    RPL_LIST(322),
-    RPL_LISTEND(323),
+    RPL_LISTSTART(321, PacketClientChannelsBegin.class),
+    RPL_LIST(322, PacketClientChannelsEntry.class),
+    RPL_LISTEND(323, PacketClientChannelsEnd.class),
     RPL_CHANNELMODEIS(324),
     RPL_UNIQOPIS(325),
     RPL_NOTOPIC(331),
     RPL_TOPIC(332, PacketClientTopic.class),
-    RPL_TOPICINFO(333, PacketClientTopicSetInformation.class),  //Sent by at least the inpIRCd, but not in spec (??) Syntax: <channel> <user who set the topic, nick on inspIRCd. Hostname on freenode> <when they set it>
+    RPL_TOPICINFO(333, PacketClientTopicSetInformation.class),  //Sent by at least the inpIRCd, but not in spec (??) Syntax: <channel> <user who set the topic, nick on inspIRCd. Nick, ident & host on freenode> <when they set it>
     RPL_INVITING(341),
     RPL_SUMMONING(342),
     RPL_INVITELIST(346),
