@@ -5,11 +5,15 @@ import com.google.inject.Injector;
 import me.yamakaja.irc.client.chat.ChatChannel;
 import me.yamakaja.irc.client.handler.*;
 import me.yamakaja.irc.client.network.event.server.ServerConnectEvent;
+import me.yamakaja.irc.client.util.StringUtils;
 import net.lahwran.fevents.EventHandler;
 import net.lahwran.fevents.Listener;
 
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Scanner;
+import java.util.function.BiConsumer;
 
 /**
  * Created by Yamakaja on 01.02.17.
@@ -51,81 +55,110 @@ public class CommandLineClient {
         ircClient.setNick("Yamakaja_");
         ircClient.sendUser("Yamakaja__", (byte) 0, "*", "It's da fake Yamakaja!");
 
-        ChatChannel selectedChannel = null;
+        final ChatChannel[] selectedChannel = {null};
 
-        String line;
-        loop:
-        while (ircClient.isConnected()) {
-            line = scanner.nextLine();
+        Map<String, BiConsumer<IRCClient, String[]>> commandProcessors = new HashMap<>();
 
-            String[] command = line.split(" ");
-            switch (command[0].toLowerCase()) {
-                case "/quit":
-                    break loop;
+        commandProcessors.put("help",
+                (client, command) ->
+                        System.out.println("Available commands: \n" +
+                                "/quit                      - Exits the client\n" +
+                                "/info <channel>            - Obtain server/channel information\n" +
+                                "/join [channel]            - Join a channel\n" +
+                                "/chat [channel]            - Select a channel for messaging\n" +
+                                "/part [channel] <reason>   - Quit a channel. Optionally with reason\n" +
+                                "/help                      - Shows this message")
+        );
 
-                case "/info": {
+        commandProcessors.put("quit",
+                (client, command) -> client.cleanup()
+        );
 
+        commandProcessors.put("info",
+                (client, command) -> {
                     if (command.length > 1 && command[1].startsWith("#")) {
-                        System.out.println(ircClient.getChannel(command[1]));
-                        continue loop;
+                        System.out.println(client.getChannel(command[1]));
+                        return;
                     }
 
-                    System.out.println(ircClient.getUser() + " on " + ircClient.getHost() + " running " + ircClient.getDaemon() + " (running since " + ircClient.getCreated() + ")");
+                    System.out.println(client.getUser() + " on " + client.getHost() + " running " + client.getDaemon() + " (running since " + client.getCreated() + ")");
                     System.out.println("Server options: ");
-                    System.out.println(ircClient.getServerOptions().toString());
-                    System.out.println("Available user modes: " + ircClient.getUserModes());
-                    System.out.println("Available channel modes: " + ircClient.getChannelModes());
-                    continue loop;
+                    System.out.println(client.getServerOptions().toString());
+                    System.out.println("Available user modes: " + client.getUserModes());
+                    System.out.println("Available channel modes: " + client.getChannelModes());
                 }
-                case "/join": {
+        );
+
+        commandProcessors.put("join",
+                (client, command) -> {
                     if (command.length < 2) {
                         System.out.println("Usage: /join [Channel]");
-                        continue loop;
+                        return;
                     }
 
                     if (!command[1].startsWith("#")) {
                         System.out.println("Cannot join " + command[1] + "! Not a channel!");
-                        continue loop;
+                        return;
                     }
 
-                    ircClient.getChannel(command[1]).join();
+                    client.getChannel(command[1]).join();
                     System.out.println("Attempting to join " + command[1] + "!");
-                    continue loop;
                 }
-                case "/chat": {
+        );
+
+        commandProcessors.put("chat",
+                (client, command) -> {
                     if (command.length < 2 || !command[1].startsWith("#")) {
                         System.out.println("Usage: /chat [Channel]");
-                        continue loop;
+                        return;
                     }
 
-                    selectedChannel = ircClient.getChannel(command[1]);
-                    continue loop;
+                    selectedChannel[0] = client.getChannel(command[1]);
                 }
-                case "/part": {
+        );
+
+        commandProcessors.put("part",
+                (client, command) -> {
                     if (command.length < 2 || !command[1].startsWith("#")) {
                         System.out.println("Usage: /part [Channel]");
-                        continue loop;
+                        return;
                     }
 
-                    ChatChannel channel = ircClient.getChannel(command[1]);
+                    ChatChannel channel = client.getChannel(command[1]);
                     if (!channel.isJoined()) {
                         System.out.println("You have not joined " + command[1] + " yet!");
-                        continue loop;
+                        return;
                     }
 
-                    if(command.length == 2) {
+                    if (command.length == 2) {
                         channel.part();
                     } else {
-                        channel.part(line.substring(line.indexOf(' ', 6) + 1));
+                        channel.part(StringUtils.join(command, " ", 2, command.length - 1));
                     }
-                    continue loop;
                 }
+        );
+
+        String line;
+        while (ircClient.isConnected()) {
+            line = scanner.nextLine();
+
+            if (line.startsWith("/")) {
+                String[] commandAndArgs = line.split(" ");
+                BiConsumer<IRCClient, String[]> cmd = commandProcessors.get(commandAndArgs[0].substring(1).toLowerCase());
+
+                if (cmd == null)
+                    System.out.println("Unknown command! Try /help for a list of commands!");
+                else
+                    cmd.accept(ircClient, commandAndArgs);
+
+                continue;
             }
 
-            if (selectedChannel != null && selectedChannel.isJoined()) {
-                selectedChannel.sendMessage(line);
-            } else if (selectedChannel != null) {
-                System.out.println("You have to join " + selectedChannel.getName() + " before being able to chat!");
+
+            if (selectedChannel[0] != null && selectedChannel[0].isJoined()) {
+                selectedChannel[0].sendMessage(line);
+            } else if (selectedChannel[0] != null) {
+                System.out.println("You have to join " + selectedChannel[0].getName() + " before being able to chat!");
             }
 
         }
