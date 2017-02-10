@@ -271,4 +271,8 @@ public class IRCClient {
         networkChannel.writeAndFlush(packet);
     }
 
+    public void setModes(String target, boolean add, String modes) {
+        networkChannel.writeAndFlush(new PacketServerMode(target, add, modes));
+    }
+
 }
