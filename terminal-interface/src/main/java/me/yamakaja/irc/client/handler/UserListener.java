@@ -5,10 +5,12 @@ import me.yamakaja.irc.client.IRCClient;
 import me.yamakaja.irc.client.network.event.channel.ChannelMessageEvent;
 import me.yamakaja.irc.client.network.event.channel.UserJoinEvent;
 import me.yamakaja.irc.client.network.event.channel.UserPartEvent;
+import me.yamakaja.irc.client.network.event.packet.ModeChangeEvent;
 import me.yamakaja.irc.client.network.event.user.UserMessageEvent;
 import me.yamakaja.irc.client.network.event.user.UserNickEvent;
 import me.yamakaja.irc.client.network.event.user.UserQuitEvent;
 import me.yamakaja.irc.client.network.event.user.UserUniqueIdEvent;
+import me.yamakaja.irc.client.network.packet.client.action.PacketClientMode;
 import me.yamakaja.irc.client.util.NameUtils;
 import net.lahwran.fevents.EventHandler;
 import net.lahwran.fevents.Listener;
@@ -64,6 +66,13 @@ public class UserListener implements Listener {
     @EventHandler
     public void onUserUniqueId(UserUniqueIdEvent e) {
         System.out.println("[UniqueId] " + e.getUniqueId());
+    }
+
+    @EventHandler
+    public void onModeChange(ModeChangeEvent e) {
+        PacketClientMode p = e.getPacket();
+
+        System.out.println("[MODE] " + NameUtils.getNick(p.getSender()) + " " + (p.isAddition() ? "added " + p.getModes() + " to ": "took " + p.getModes() + " from ") + p.getTarget());
     }
 
 }

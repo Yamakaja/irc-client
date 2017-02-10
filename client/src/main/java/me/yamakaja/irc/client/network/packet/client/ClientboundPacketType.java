@@ -35,6 +35,7 @@ public enum ClientboundPacketType {
     PRIVMSG(PacketClientMessage.class),
     QUIT(PacketClientQuit.class),
     NOTICE(PacketClientNotice.class),
+    MODE(PacketClientMode.class, ModeChangeEvent.class),
 
     RPL_WELCOME(1, PacketClientWelcome.class),
     RPL_YOURHOST(2, PacketClientHost.class),
