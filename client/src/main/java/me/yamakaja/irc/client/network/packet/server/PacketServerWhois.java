@@ -13,7 +13,7 @@ public class PacketServerWhois extends ServerboundPacket {
 
     @Override
     public String getEncoded() {
-        return "WHOIS " + nick + "\n";
+        return "WHOIS " + nick;
     }
 
 }

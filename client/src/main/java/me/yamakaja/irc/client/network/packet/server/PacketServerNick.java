@@ -21,7 +21,7 @@ public class PacketServerNick extends ServerboundPacket {
 
     @Override
     public String getEncoded() {
-        return "NICK " + nick + "\n";
+        return "NICK " + nick;
     }
 
     @Override

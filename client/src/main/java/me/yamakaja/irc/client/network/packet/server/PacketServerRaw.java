@@ -8,7 +8,7 @@ public class PacketServerRaw extends ServerboundPacket {
     private String command;
 
     public PacketServerRaw(String command) {
-        this.command = command + "\n";
+        this.command = command;
     }
 
     @Override

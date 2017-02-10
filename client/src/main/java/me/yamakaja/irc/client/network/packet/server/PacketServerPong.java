@@ -19,6 +19,6 @@ public class PacketServerPong extends ServerboundPacket {
 
     @Override
     public String getEncoded() {
-        return "PONG " + message + "\n";
+        return "PONG " + message;
     }
 }

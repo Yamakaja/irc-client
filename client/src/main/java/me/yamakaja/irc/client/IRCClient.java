@@ -15,10 +15,7 @@ import io.netty.channel.socket.nio.NioSocketChannel;
 import me.yamakaja.irc.client.chat.ChatChannel;
 import me.yamakaja.irc.client.network.event.server.ServerConnectEvent;
 import me.yamakaja.irc.client.network.handler.IRCClientChannelInitializer;
-import me.yamakaja.irc.client.network.packet.server.PacketServerNick;
-import me.yamakaja.irc.client.network.packet.server.PacketServerRaw;
-import me.yamakaja.irc.client.network.packet.server.PacketServerUser;
-import me.yamakaja.irc.client.network.packet.server.PacketServerWhois;
+import me.yamakaja.irc.client.network.packet.server.*;
 import net.lahwran.fevents.ThreadedEventBus;
 
 import java.util.ArrayList;
@@ -142,6 +139,7 @@ public class IRCClient {
         if (channels.containsKey(name))
             return channels.get(name);
         ChatChannel channel = new ChatChannel(name);
+        injector.injectMembers(channel);
         channels.put(name, channel);
         return channel;
     }
@@ -270,6 +268,10 @@ public class IRCClient {
 
     public List<String> getServerOptions() {
         return serverOptions;
+    }
+
+    public void sendPacket(ServerboundPacket packet) {
+        networkChannel.writeAndFlush(packet);
     }
 
 }

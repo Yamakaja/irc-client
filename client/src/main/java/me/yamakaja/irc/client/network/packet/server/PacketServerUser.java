@@ -22,7 +22,7 @@ public class PacketServerUser extends ServerboundPacket {
 
     @Override
     public String getEncoded() {
-        return "USER " + ident + " " + mode + " " + host + " :" + realname + "\n";
+        return "USER " + ident + " " + mode + " " + host + " :" + realname;
     }
 
     public String getIdent() {

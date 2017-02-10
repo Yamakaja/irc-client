@@ -2,6 +2,9 @@ package me.yamakaja.irc.client.chat;
 
 import com.google.inject.Inject;
 import me.yamakaja.irc.client.IRCClient;
+import me.yamakaja.irc.client.network.packet.server.PacketServerJoin;
+import me.yamakaja.irc.client.network.packet.server.PacketServerMessage;
+import me.yamakaja.irc.client.network.packet.server.PacketServerPart;
 
 import java.util.Collection;
 import java.util.Date;
@@ -21,6 +24,8 @@ public class ChatChannel {
 
     private String topicSetter;
     private Date topicTime;
+
+    private boolean joined;
 
     @Inject
     private IRCClient ircClient;
@@ -43,14 +48,6 @@ public class ChatChannel {
 
     public List<String> getUsers() {
         return users;
-    }
-
-    public void setTopicSetter(String topicSetter) {
-        this.topicSetter = topicSetter;
-    }
-
-    public void setTopicTime(Date topicTime) {
-        this.topicTime = topicTime;
     }
 
     @Override
@@ -81,8 +78,16 @@ public class ChatChannel {
         return topicSetter;
     }
 
+    public void setTopicSetter(String topicSetter) {
+        this.topicSetter = topicSetter;
+    }
+
     public Date getTopicTime() {
         return topicTime;
+    }
+
+    public void setTopicTime(Date topicTime) {
+        this.topicTime = topicTime;
     }
 
     @Override
@@ -91,8 +96,10 @@ public class ChatChannel {
                 "name='" + name + '\'' +
                 ", topic='" + topic + '\'' +
                 ", users=" + users +
+                ", finishedNames=" + finishedNames +
                 ", topicSetter='" + topicSetter + '\'' +
                 ", topicTime=" + topicTime +
+                ", joined=" + joined +
                 '}';
     }
 
@@ -101,12 +108,65 @@ public class ChatChannel {
     }
 
     public void addUsers(Collection<String> usersToAdd) {
-        if(finishedNames) {
+        if (finishedNames) {
             this.users.clear();
             finishedNames = false;
         }
 
         this.users.addAll(usersToAdd);
+    }
+
+    public void join() {
+        if (!joined)
+            ircClient.sendPacket(new PacketServerJoin(this.name));
+    }
+
+    public boolean isJoined() {
+        return joined;
+    }
+
+    /**
+     * Internal use only!
+     *
+     * @param joined joined
+     */
+    public void setJoined(boolean joined) {
+        this.joined = joined;
+    }
+
+    /**
+     * Send a message to this channel!
+     *
+     * @param message The message to send
+     * @throws IllegalStateException If you try to write to a channel that you haven't connected to
+     */
+    public void sendMessage(String message) {
+        if (!joined)
+            throw new IllegalStateException("Cannot write to " + this.getName() + " because it hasn't been joined yet!");
+
+        this.ircClient.sendPacket(new PacketServerMessage(this.getName(), message));
+    }
+
+    /**
+     * Leave the channel
+     *
+     * @throws IllegalStateException If you try to disconnect from a channel that you didn't join before
+     */
+    public void part() {
+        this.part(null);
+    }
+
+    /**
+     * Leave a channel
+     *
+     * @param message The part message
+     * @throws IllegalStateException If you try to disconnect from a channel that you didn't join before
+     */
+    public void part(String message) {
+        if(!this.joined)
+            throw new IllegalStateException("Cannot leave " + this.name + " if you haven't joined it before!");
+
+        this.ircClient.sendPacket(new PacketServerPart(this.name, message));
     }
 
 }

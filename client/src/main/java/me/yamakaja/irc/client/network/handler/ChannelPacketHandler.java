@@ -57,12 +57,22 @@ public class ChannelPacketHandler extends ChannelInboundHandlerAdapter {
             }
             case JOIN: {
                 PacketClientJoin packet = (PacketClientJoin) msg;
+
+                if (client.isUser(packet.getSender())) {
+                    client.getChannel(packet.getChannel()).setJoined(true);
+                }
+
                 client.getEventBus().callEventAsync(new UserJoinEvent(packet.getSender(), client.getChannel(packet.getChannel())));
                 return;
             }
             case PART: {
-                PacketClientPart part = (PacketClientPart) msg;
-                client.getEventBus().callEventAsync(new UserPartEvent(part.getSender(), client.getChannel(part.getChannel()), part.getReason()));
+                PacketClientPart packet = (PacketClientPart) msg;
+
+                if (client.isUser(packet.getSender())) {
+                    client.getChannel(packet.getChannel()).setJoined(false);
+                }
+
+                client.getEventBus().callEventAsync(new UserPartEvent(packet.getSender(), client.getChannel(packet.getChannel()), packet.getReason()));
                 return;
             }
         }
