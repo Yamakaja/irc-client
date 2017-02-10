@@ -18,7 +18,10 @@ import me.yamakaja.irc.client.network.handler.IRCClientChannelInitializer;
 import me.yamakaja.irc.client.network.packet.server.*;
 import net.lahwran.fevents.ThreadedEventBus;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Yamakaja on 01.02.17.
@@ -81,7 +84,7 @@ public class IRCClient {
         return false;
     }
 
-    public void cleanup() {
+    public void shutdown() {
         try {
             if (networkChannel.isOpen())
                 networkChannel.writeAndFlush(new PacketServerRaw("QUIT"));
@@ -273,6 +276,20 @@ public class IRCClient {
 
     public void setModes(String target, boolean add, String modes) {
         networkChannel.writeAndFlush(new PacketServerMode(target, add, modes));
+    }
+
+    /**
+     * Send a private message to somebody
+     *
+     * @param target  Who to send it to
+     * @param message The message to send
+     */
+    public void message(String target, String message) {
+        networkChannel.writeAndFlush(new PacketServerMessage(target, message));
+    }
+
+    public ChannelFuture getCloseFuture() {
+        return networkChannel.closeFuture();
     }
 
 }

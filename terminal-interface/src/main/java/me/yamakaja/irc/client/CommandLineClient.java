@@ -71,7 +71,7 @@ public class CommandLineClient {
         );
 
         commandProcessors.put("quit",
-                (client, command) -> client.cleanup()
+                (client, command) -> client.shutdown()
         );
 
         commandProcessors.put("info",
@@ -173,7 +173,7 @@ public class CommandLineClient {
 
         }
 
-        ircClient.cleanup();
+        ircClient.shutdown();
     }
 
     @EventHandler

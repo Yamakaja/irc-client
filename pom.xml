@@ -12,6 +12,7 @@
     <modules>
         <module>client</module>
         <module>terminal-interface</module>
+	<module>bot</module>
     </modules>
 
 </project>

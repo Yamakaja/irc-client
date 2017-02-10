@@ -4,6 +4,7 @@ import com.google.inject.Inject;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import me.yamakaja.irc.client.IRCClient;
+import me.yamakaja.irc.client.network.event.server.ServerUserRegisteredEvent;
 import me.yamakaja.irc.client.network.packet.client.ClientboundPacket;
 import me.yamakaja.irc.client.network.packet.client.command.server.*;
 
@@ -23,6 +24,7 @@ public class InitialPacketHandler extends ChannelInboundHandlerAdapter {
         switch (((ClientboundPacket) msg).getPacketType()) {
             case RPL_WELCOME:
                 client.setUser(((PacketClientWelcome) msg).getUser());
+                client.getEventBus().callEventAsync(new ServerUserRegisteredEvent());
                 return;
             case RPL_YOURHOST: {
                 PacketClientHost packet = (PacketClientHost) msg;

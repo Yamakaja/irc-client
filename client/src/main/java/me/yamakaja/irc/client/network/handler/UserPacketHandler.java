@@ -5,6 +5,7 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import me.yamakaja.irc.client.IRCClient;
 import me.yamakaja.irc.client.network.event.channel.ChannelMessageEvent;
+import me.yamakaja.irc.client.network.event.server.NickServAvailableEvent;
 import me.yamakaja.irc.client.network.event.server.ServerNoticeEvent;
 import me.yamakaja.irc.client.network.event.user.UserMessageEvent;
 import me.yamakaja.irc.client.network.event.user.UserNickEvent;
@@ -50,6 +51,8 @@ public class UserPacketHandler extends ChannelInboundHandlerAdapter {
             }
             case NOTICE: {
                 PacketClientNotice packet = (PacketClientNotice) originalPacket;
+                if(packet.getMessage().contains("NickServ"))
+                    client.getEventBus().callEventAsync(new NickServAvailableEvent());
                 client.getEventBus().callEventAsync(new ServerNoticeEvent(packet.getTarget(), packet.getMessage()));
                 return;
             }
