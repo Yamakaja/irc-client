@@ -21,7 +21,7 @@ public class NickServAvailabilityListener implements Listener {
         if(loggedIn)
             return;
 
-        bot.getClient().message("NickServ", "IDENTIFY " + bot.getNickServPassword());
+        bot.getClient().sendMessage("NickServ", "IDENTIFY " + bot.getNickServPassword());
         loggedIn = true;
     }
 

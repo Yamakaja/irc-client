@@ -284,7 +284,7 @@ public class IRCClient {
      * @param target  Who to send it to
      * @param message The message to send
      */
-    public void message(String target, String message) {
+    public void sendMessage(String target, String message) {
         networkChannel.writeAndFlush(new PacketServerMessage(target, message));
     }
 

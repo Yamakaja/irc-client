@@ -4,7 +4,10 @@ import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Singleton;
 import io.netty.channel.ChannelFuture;
-import me.yamakaja.irc.bot.listener.CommandListener;
+import me.yamakaja.irc.bot.command.Command;
+import me.yamakaja.irc.bot.command.CommandHelp;
+import me.yamakaja.irc.bot.command.CommandManager;
+import me.yamakaja.irc.bot.command.CommandRandom;
 import me.yamakaja.irc.bot.listener.NickServAvailabilityListener;
 import me.yamakaja.irc.bot.listener.RegistrationListener;
 import me.yamakaja.irc.client.IRCClient;
@@ -21,6 +24,11 @@ import java.util.List;
 @Singleton
 public class IRCBot {
 
+    public static final Class[] COMMANDS = {
+            CommandHelp.class,
+            CommandRandom.class
+    };
+
     private String nick;
     private String nickServPassword;
 
@@ -34,7 +42,10 @@ public class IRCBot {
     @Inject
     private Injector injector;
 
-    public IRCBot() {
+    private CommandManager commandManager;
+
+    public CommandManager getCommandManager() {
+        return commandManager;
     }
 
     public void setNick(String nick, String nickServPassword) {
@@ -56,11 +67,20 @@ public class IRCBot {
 
         registerListeners();
 
+        commandManager = injector.getInstance(CommandManager.class);
+        client.getEventBus().registerListener(commandManager);
+
+        registerCommands();
+
         if (!client.connect())
             throw new RuntimeException("An error occurred while trying to launch!");
 
         client.setNick(nick);
         client.sendUser("bot", (byte) 0, "*", "I'm a bot, made by Yamakaja");
+    }
+
+    private void registerCommands() {
+        Arrays.stream(COMMANDS).forEach(clazz -> commandManager.registerCommand((Command) injector.getInstance(clazz)));
     }
 
     public String getNick() {
@@ -83,7 +103,6 @@ public class IRCBot {
     private void registerListeners() {
         Class<Listener>[] classes = new Class[]{
                 NickServAvailabilityListener.class,
-                CommandListener.class,
                 RegistrationListener.class
         };
         Arrays.stream(classes).forEach(clazz -> client.getEventBus().registerListener(injector.getInstance(clazz)));
