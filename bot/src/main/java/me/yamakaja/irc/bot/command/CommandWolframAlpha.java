@@ -6,10 +6,7 @@ import me.yamakaja.irc.bot.config.CommandConfig;
 import me.yamakaja.irc.bot.util.CommandUtils;
 import me.yamakaja.irc.client.chat.ChatChannel;
 import me.yamakaja.irc.client.util.StringUtils;
-import nu.xom.Builder;
-import nu.xom.Document;
-import nu.xom.Elements;
-import nu.xom.ParsingException;
+import nu.xom.*;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -54,27 +51,36 @@ public class CommandWolframAlpha extends Command<CommandWolframAlpha.CommandWolf
                 return false;
             }
 
-            Elements children = document.getRootElement().getChildElements("pod");
-
-            for (int i = 0; i < children.size(); i++) {
-                switch (children.get(i).getAttribute("title").getValue()) {
-                    case "Decimal approximation":
-                        CommandUtils.sendCommandResponse(bot, originChannel, sender, "Decimal approximation: " + children.get(i).getChild(1).getChild(3).getValue());
-                        return false;
-                    case "Result":
-                    case "Results":
-                    case "Definite integral":
-                    case "Message digest":
-                        CommandUtils.sendCommandResponse(bot, originChannel, sender, "Result: " + children.get(i).getChild(1).getChild(3).getValue());
-                        return false;
-                }
-            }
+            CommandUtils.sendCommandResponse(bot, originChannel, sender, "Result: " + getPlaintext(document.getRootElement()).replace('\n', ' '));
 
         } catch (IOException | ParsingException e) {
             e.printStackTrace();
         }
 
         return false;
+    }
+
+    private String getPlaintext(Element element) {
+        if(element.getAttribute("title") != null) {
+            String title = element.getAttribute("title").getValue();
+            if (title.equals("Input interpretation") || title.equals("Input"))
+                return null;
+        }
+
+        Element plaintext = element.getFirstChildElement("plaintext");
+        if (plaintext != null)
+            return plaintext.getValue();
+
+        Elements children = element.getChildElements();
+
+        String result;
+        for (int i = 0; i < element.getChildCount(); i++) {
+            result = getPlaintext(children.get(i));
+            if(result != null)
+                return result;
+        }
+
+        return null;
     }
 
     public static class CommandWolframAlphaConfig extends CommandConfig {
