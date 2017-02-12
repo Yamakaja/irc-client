@@ -14,7 +14,7 @@ public class CommandRandom extends Command {
     private IRCBot bot;
 
     public CommandRandom() {
-        super("random", "Draw a random number", "<min> <max>");
+        super("random", "Get a random number", "<min> <max>");
     }
 
     @Override

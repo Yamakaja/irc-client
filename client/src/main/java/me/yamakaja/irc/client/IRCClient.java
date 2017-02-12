@@ -16,6 +16,7 @@ import me.yamakaja.irc.client.chat.ChatChannel;
 import me.yamakaja.irc.client.network.event.server.ServerConnectEvent;
 import me.yamakaja.irc.client.network.handler.IRCClientChannelInitializer;
 import me.yamakaja.irc.client.network.packet.server.*;
+import me.yamakaja.irc.client.util.NameUtils;
 import net.lahwran.fevents.ThreadedEventBus;
 
 import java.util.ArrayList;
@@ -285,7 +286,7 @@ public class IRCClient {
      * @param message The message to send
      */
     public void sendMessage(String target, String message) {
-        networkChannel.writeAndFlush(new PacketServerMessage(target, message));
+        networkChannel.writeAndFlush(new PacketServerMessage(NameUtils.getNick(target), message));
     }
 
     public ChannelFuture getCloseFuture() {

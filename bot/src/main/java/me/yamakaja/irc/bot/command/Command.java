@@ -17,6 +17,8 @@ public abstract class Command {
         this.usage = usage;
     }
 
+    public void init(){}
+
     protected abstract boolean onCommand(ChatChannel originChannel, String sender, String[] args);
 
     public String getName() {

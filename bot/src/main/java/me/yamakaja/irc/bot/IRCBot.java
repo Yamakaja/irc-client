@@ -4,10 +4,7 @@ import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Singleton;
 import io.netty.channel.ChannelFuture;
-import me.yamakaja.irc.bot.command.Command;
-import me.yamakaja.irc.bot.command.CommandHelp;
-import me.yamakaja.irc.bot.command.CommandManager;
-import me.yamakaja.irc.bot.command.CommandRandom;
+import me.yamakaja.irc.bot.command.*;
 import me.yamakaja.irc.bot.listener.NickServAvailabilityListener;
 import me.yamakaja.irc.bot.listener.RegistrationListener;
 import me.yamakaja.irc.client.IRCClient;
@@ -26,7 +23,8 @@ public class IRCBot {
 
     public static final Class[] COMMANDS = {
             CommandHelp.class,
-            CommandRandom.class
+            CommandRandom.class,
+            CommandKill.class
     };
 
     private String nick;
