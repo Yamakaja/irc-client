@@ -25,6 +25,7 @@ public class UserPacketHandler extends ChannelInboundHandlerAdapter {
 
     @Inject
     private IRCClient client;
+    private boolean nickServNotified;
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
@@ -51,8 +52,10 @@ public class UserPacketHandler extends ChannelInboundHandlerAdapter {
             }
             case NOTICE: {
                 PacketClientNotice packet = (PacketClientNotice) originalPacket;
-                if(packet.getMessage().contains("NickServ"))
+                if (packet.getMessage().contains("NickServ") && !nickServNotified) {
+                    nickServNotified = true;
                     client.getEventBus().callEventAsync(new NickServAvailableEvent());
+                }
                 client.getEventBus().callEventAsync(new ServerNoticeEvent(packet.getTarget(), packet.getMessage()));
                 return;
             }

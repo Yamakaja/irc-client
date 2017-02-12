@@ -5,6 +5,7 @@ import com.google.inject.Injector;
 import com.google.inject.Singleton;
 import io.netty.channel.ChannelFuture;
 import me.yamakaja.irc.bot.command.*;
+import me.yamakaja.irc.bot.config.ConfigManager;
 import me.yamakaja.irc.bot.listener.NickServAvailabilityListener;
 import me.yamakaja.irc.bot.listener.RegistrationListener;
 import me.yamakaja.irc.client.IRCClient;
@@ -40,10 +41,18 @@ public class IRCBot {
     @Inject
     private Injector injector;
 
+    @Inject
     private CommandManager commandManager;
+
+    @Inject
+    private ConfigManager configManager;
 
     public CommandManager getCommandManager() {
         return commandManager;
+    }
+
+    public ConfigManager getConfigManager() {
+        return configManager;
     }
 
     public void setNick(String nick, String nickServPassword) {
@@ -65,8 +74,8 @@ public class IRCBot {
 
         registerListeners();
 
-        commandManager = injector.getInstance(CommandManager.class);
         client.getEventBus().registerListener(commandManager);
+        configManager.initialize();
 
         registerCommands();
 
