@@ -25,7 +25,8 @@ public class IRCBot {
     public static final Class[] COMMANDS = {
             CommandHelp.class,
             CommandRandom.class,
-            CommandKill.class
+            CommandKill.class,
+            CommandWolframAlpha.class
     };
 
     private String nick;

@@ -64,6 +64,7 @@ public class CommandManager implements Listener {
     }
 
     public void registerCommand(Command command) {
+        command.initialize();
         commandMap.put(command.getName(), command);
     }
 

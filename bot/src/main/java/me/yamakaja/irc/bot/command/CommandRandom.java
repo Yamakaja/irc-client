@@ -2,8 +2,8 @@ package me.yamakaja.irc.bot.command;
 
 import com.google.inject.Inject;
 import me.yamakaja.irc.bot.IRCBot;
+import me.yamakaja.irc.bot.util.CommandUtils;
 import me.yamakaja.irc.client.chat.ChatChannel;
-import me.yamakaja.irc.client.util.NameUtils;
 
 /**
  * Created by Yamakaja on 11.02.17.
@@ -31,10 +31,7 @@ public class CommandRandom extends Command {
 
             String result = "Result: " + ((int) ((Math.random() * (max - min)) + min));
 
-            if (origin == null)
-                bot.getClient().sendMessage(NameUtils.getNick(sender), result);
-            else
-                origin.sendMessage("(" + NameUtils.getNick(sender) + ") " + result);
+            CommandUtils.sendCommandResponse(bot, origin, sender, result);
 
         } catch (IllegalArgumentException e) {
             return true;

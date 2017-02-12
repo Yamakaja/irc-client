@@ -1,7 +1,11 @@
 {
   "commands": {
+    "wa": {
+      "clazz": "me.yamakaja.irc.bot.command.CommandWolframAlpha$CommandWolframAlphaConfig",
+      "appid": "XXXXX"
+    },
     "kill": {
-      "clazz":"me.yamakaja.irc.bot.command.CommandKill$CommandKillConfig",
+      "clazz": "me.yamakaja.irc.bot.command.CommandKill$CommandKillConfig",
       "messages": [
         "throws {user} into a puddle of corium.",
         "rips off {user}'s {limbs} and leaves them to die.",

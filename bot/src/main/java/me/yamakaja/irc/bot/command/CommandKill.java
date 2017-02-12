@@ -11,11 +11,10 @@ import java.util.Map;
 /**
  * Created by Yamakaja on 12.02.17.
  */
-public class CommandKill extends Command {
+public class CommandKill extends Command<CommandKill.CommandKillConfig> {
 
     @Inject
     private IRCBot bot;
-    private CommandKillConfig killConfig;
 
     public CommandKill() {
         super("kill", "Kill somebody", "<target>");
@@ -23,11 +22,6 @@ public class CommandKill extends Command {
 
     @Override
     protected boolean onCommand(ChatChannel originChannel, String sender, String[] args) {
-        if (killConfig == null) {
-            System.out.println("Loading config: kill");
-            killConfig = (CommandKillConfig) bot.getConfigManager().getConfig().getCommandConfigs().get(getName());
-        }
-
         if (args.length == 0)
             return true;
 
@@ -52,11 +46,11 @@ public class CommandKill extends Command {
     }
 
     private String getKillMessage(String target) {
-        String message = killConfig.messages[(int) (Math.random() * killConfig.messages.length)];
+        String message = getConfig().messages[(int) (Math.random() * getConfig().messages.length)];
 
         message = message.replace("{user}", target);
 
-        for (Map.Entry<String, String[]> entry : killConfig.parts.entrySet()) {
+        for (Map.Entry<String, String[]> entry : getConfig().parts.entrySet()) {
             message = message.replace("{" + entry.getKey() + "}", entry.getValue()[(int) (entry.getValue().length * Math.random())]);
         }
         return message;
